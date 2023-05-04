@@ -2,7 +2,7 @@
 CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `name` VARCHAR(191) NOT NULL,
-    `password` VARCHAR(191) NULL,
+    `hash` VARCHAR(191) NULL,
 
     UNIQUE INDEX `User_name_key`(`name`),
     PRIMARY KEY (`id`)

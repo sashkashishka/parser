@@ -27,8 +27,8 @@ services:
     expose:
       - 3306
     volumes:
-      - "./tmp/data:/var/lib/mysql"
-      - "./docker/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
+      - "./prisma/tmp/data:/var/lib/mysql"
+      - "./prisma/mysql/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d"
     env_file:
       - ".env"
     networks:
