@@ -1,9 +1,9 @@
 import { CanActivate, Injectable } from '@nestjs/common'
-import { IS_DEV } from 'src/constants';
+import { envVariables } from 'src/constants';
 
 @Injectable()
 export class IsDev implements CanActivate {
   canActivate() {
-    return IS_DEV; 
+    return envVariables.getVariable('NODE_ENV') === 'development'; 
   }
 }

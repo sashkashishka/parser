@@ -2,7 +2,7 @@ import { pbkdf2Sync } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/createUser.dto';
-import { HASH_SALT } from 'src/constants';
+import { envVariables } from 'src/constants';
 
 @Injectable()
 export class UsersService {
@@ -26,18 +26,10 @@ export class UsersService {
   }
 
   private encryptPassword(password: string) {
-    return pbkdf2Sync(password, this.salt, 5, 40, 'sha256').toString('hex');
+    return pbkdf2Sync(password, envVariables.getVariable('HASH_SALT'), 5, 40, 'sha256').toString('hex');
   }
 
   public isPasswordValid(hash: string, password: string) {
     return hash === this.encryptPassword(password); 
-  }
-
-  private get salt() {
-    if (!HASH_SALT) {
-      throw new Error('Provide HASH_SALT env variable!');
-    }
-
-    return HASH_SALT;
   }
 }

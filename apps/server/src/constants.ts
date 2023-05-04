@@ -1,3 +1,19 @@
-export const JWT_SECRET = process.env.JWT_SECRET || 'four-words-all-caps';
-export const HASH_SALT = process.env.HASH_SALT;
-export const IS_DEV = process.env.NODE_ENV === 'development';
+type tVariables = 'HASH_SALT' | 'JWT_SECRET' | 'NODE_ENV';
+
+class EnvVariables {
+  private createError(variable: string) {
+    return new Error(`Provide this env variable: "${variable}"`);
+  }
+
+  public getVariable(variable: tVariables) {
+    const envVar = process.env[variable];
+
+    if (!envVar) {
+      throw this.createError(variable);
+    }
+
+    return envVar;
+  }
+}
+
+export const envVariables = new EnvVariables();
