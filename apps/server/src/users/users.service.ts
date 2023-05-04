@@ -2,6 +2,7 @@ import { pbkdf2Sync } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto } from './dto/createUser.dto';
+import { HASH_SALT } from 'src/constants';
 
 @Injectable()
 export class UsersService {
@@ -33,10 +34,10 @@ export class UsersService {
   }
 
   private get salt() {
-    if (!process.env.HASH_SALT) {
+    if (!HASH_SALT) {
       throw new Error('Provide HASH_SALT env variable!');
     }
 
-    return process.env.HASH_SALT;
+    return HASH_SALT;
   }
 }

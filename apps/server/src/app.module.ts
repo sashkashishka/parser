@@ -14,7 +14,7 @@ import { UsersModule } from './users/users.module';
       global: true,
       secret: JWT_SECRET,
       signOptions: {
-        expiresIn: '1d',
+        expiresIn: '1h',
       },
     }),
   ],
