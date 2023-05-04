@@ -1,3 +1,4 @@
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import {
   FastifyAdapter,
@@ -13,6 +14,7 @@ async function bootstrap() {
       abortOnError: process.env.NODE_ENV !== 'development',
     },
   );
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(8000, '0.0.0.0');
 }
 bootstrap();
