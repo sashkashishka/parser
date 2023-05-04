@@ -12,8 +12,4 @@ RUN apk update \
 
 WORKDIR /usr/app
 
-COPY ./pnpm-lock.yaml ./
-COPY ./package.json ./
-RUN pnpm i --frozen-lockfile
-
 CMD ["pnpm", "start:dev"]
