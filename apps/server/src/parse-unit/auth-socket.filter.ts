@@ -1,6 +1,7 @@
 import { ExceptionFilter, Catch, ArgumentsHost } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { Socket } from 'socket.io';
+import { ParseUnitEvents } from './constants';
 
 @Catch(WsException)
 export class AuthSocketFilter implements ExceptionFilter {
@@ -8,7 +9,7 @@ export class AuthSocketFilter implements ExceptionFilter {
     const ctx = host.switchToWs();
     const client = ctx.getClient<Socket>();
 
-    client.send({ event: 'error', data: exception.message });
+    client.send({ event: ParseUnitEvents.error, data: exception.message });
     client.disconnect(true);
   }
 }
