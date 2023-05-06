@@ -5,6 +5,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { envVariables } from './constants';
 import { UsersModule } from './users/users.module';
+import { ParseUnitModule } from './parse-unit/parse-unit.module';
 
 @Module({
   imports: [
@@ -17,8 +18,9 @@ import { UsersModule } from './users/users.module';
         expiresIn: '1h',
       },
     }),
+    ParseUnitModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
