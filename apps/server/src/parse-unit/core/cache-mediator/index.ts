@@ -12,6 +12,8 @@ import {
 import { iAd } from 'src/types/ad';
 import { AdPollingEvent } from '../utils/events';
 
+const MAX_CACHE_SIZE = 300;
+
 export class CacheMediator {
   private set: Set<AdPollingEvent> = new Set();
 
@@ -50,7 +52,9 @@ export class CacheMediator {
       return this.subscribe.next(event);
     }
 
-    this.set.add(event);
+    if (this.set.size < MAX_CACHE_SIZE) {
+      this.set.add(event);
+    }
   }
 
   private sendCache() {
