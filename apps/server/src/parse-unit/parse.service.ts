@@ -55,6 +55,12 @@ export class ParseService implements OnModuleDestroy {
     return this.cacheMediator.adsStream;
   }
 
+  public resubscribe() {
+    if (this.status() === 'idle') return undefined;
+
+    return this.cacheMediator.adsStream;
+  }
+
   public stop() {
     console.trace('Stop');
     this.abortController?.abort?.();

@@ -69,9 +69,7 @@ export class ParseGateway
 
   @SubscribeMessage(ParseUnitEvents.resubscribe)
   handleResubscribe() {
-    if (this.parseService.status() !== 'active') return undefined;
-
-    return this.parseService.start([], new Date());
+    return this.parseService.resubscribe();
   }
 
   @SubscribeMessage(ParseUnitEvents.stop)
