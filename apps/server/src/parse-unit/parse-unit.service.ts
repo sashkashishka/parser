@@ -4,17 +4,15 @@ import { iParseUnit } from 'src/types';
 
 @Injectable()
 export class ParseUnitService {
-  public parseUnits: Record<number, iParseUnit>;
-
   constructor(private prisma: PrismaService) {}
 
-  getAllParseUnits() {
+  getParseUnits() {}
+
+  getParseUnitsById(ids: number[]) {
     // return this.prisma
   }
 
-  setEndTime(endTime: Date | null) {
+  addParseUnit() {}
 
-  }
-
-
+  removeParseUnit() {}
 }

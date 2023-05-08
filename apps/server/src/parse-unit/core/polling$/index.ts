@@ -3,10 +3,9 @@ import {
   delay,
   Observable,
   of,
-  EMPTY,
   map,
-  expand,
-  startWith,
+  repeat,
+  takeWhile,
 } from 'rxjs';
 import { iParseUnit } from 'src/types';
 import { iAd } from 'src/types/ad';
@@ -15,16 +14,16 @@ import { ParseFetchError, MaxConsecutiveError } from '../utils/errors';
 import {
   AdPollingEvent,
   ErrorPollingEvent,
-  FinishPollingEvent,
   iPollingEvent,
 } from '../utils/events';
 
-interface iPollingOptions {
+export interface iPollingOptions {
   signal: AbortSignal;
   endTime: Date;
 }
 
-const MAX_CONSECUTIVE_ERROS = 15;
+const MAX_CONSECUTIVE_ERRORS = 10;
+const DEFAULT_FREQUENCY = 1000;
 
 export function createPolling$(
   parseUnit: iParseUnit,
@@ -32,15 +31,18 @@ export function createPolling$(
 ): Observable<iPollingEvent> {
   const { frequency } = parseUnit;
 
-  let consecutiveErrorCount = 0;
+  let c = 0;
+  let counter = 0;
+  let consecutiveErrorCount = 1;
 
-  const query$ = of({}).pipe(
+  return of([]).pipe(
     catchError((err) => {
       consecutiveErrorCount += 1;
 
-      if (consecutiveErrorCount >= MAX_CONSECUTIVE_ERROS) {
+      if (consecutiveErrorCount >= MAX_CONSECUTIVE_ERRORS) {
         throw new ErrorPollingEvent(
           new MaxConsecutiveError(
+            err.message,
             stringifyErrorCode(ERROR_CODES.MAX_CONSECUTIVE_ERROR),
           ),
         );
@@ -49,9 +51,8 @@ export function createPolling$(
       return of(
         new ErrorPollingEvent(
           new ParseFetchError(
-            `${stringifyErrorCode(ERROR_CODES.PARSE_FETCH_ERROR)}: ${
-              err.message
-            }`,
+            err.message,
+            stringifyErrorCode(ERROR_CODES.PARSE_FETCH_ERROR),
           ),
         ),
       );
@@ -60,20 +61,20 @@ export function createPolling$(
       if (data instanceof ErrorPollingEvent) return data;
 
       consecutiveErrorCount = 0;
-      // TODO: pass right types
-      // @ts-ignore
-      return new AdPollingEvent(data);
+
+      // TODO: in some way be notified about different data
+      // or move it to parser
+      const payload = !Array.isArray(data) ? data : [{ id: counter++ }];
+
+      return new AdPollingEvent(payload);
     }),
-    delay(frequency),
-  );
+    delay(frequency || DEFAULT_FREQUENCY),
+    repeat(),
+    // takeWhile(() => endTime.getTime() >= Date.now()),
+    takeWhile(() => {
 
-  return query$.pipe(
-    expand(() => {
-      if (Date.now() >= endTime.getTime()) {
-        return EMPTY.pipe(startWith(new FinishPollingEvent()));
-      }
-
-      return query$;
+      c++;
+      return c <= 7;
     }),
   );
 }
