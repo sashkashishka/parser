@@ -12,7 +12,18 @@ generator client {
 }
 
 model User {
-  id      Int      @id @default(autoincrement())
-  name   String   @unique
-  hash    String?
+  id         Int      @id @default(autoincrement())
+  name       String   @unique
+  hash       String?
+  parseUnit  ParseUnit?
+}
+
+
+model ParseUnit {
+  id         Int   @id @default(autoincrement())
+  frequency  Int 
+  siteUrl    String
+  name       String
+  user       User  @relation(fields: [userId], references: [id])
+  userId     Int   @unique
 }

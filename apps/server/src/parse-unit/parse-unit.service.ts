@@ -6,13 +6,45 @@ import { iParseUnit } from 'src/types';
 export class ParseUnitService {
   constructor(private prisma: PrismaService) {}
 
-  getParseUnits() {}
-
-  getParseUnitsById(ids: number[]) {
-    // return this.prisma
+  getParseUnits(userId: number) {
+    return this.prisma.parseUnit.findMany({
+      where: {
+        userId,
+      },
+    });
   }
 
-  addParseUnit() {}
+  getParseUnitById(id: number) {
+    return this.prisma.parseUnit.findMany({
+      where: {
+        id,
+      },
+    });
+  }
 
-  removeParseUnit() {}
+  addParseUnit(userId: number, parseUnit: Omit<iParseUnit, 'id'>) {
+    return this.prisma.parseUnit.create({
+      data: {
+        ...parseUnit,
+        userId,
+      },
+    });
+  }
+
+  updateParseUnit(parseUnit: iParseUnit) {
+    return this.prisma.parseUnit.update({
+      data: parseUnit,
+      where: {
+        id: parseUnit.id,
+      },
+    });
+  }
+
+  removeParseUnit(id: number) {
+    return this.prisma.parseUnit.delete({
+      where: {
+        id,
+      },
+    });
+  }
 }

@@ -1,5 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { iJwtPayload } from 'src/types/jwtPayload';
 import { UsersService } from '../users/users.service';
 import { SignInUserDto } from './dto/SignInUser.dto';
 
@@ -17,7 +18,7 @@ export class AuthService {
       throw new UnauthorizedException('Username or password incorrect');
     }
 
-    const payload = { username: user.name, sub: user.id };
+    const payload: iJwtPayload = { name: user.name, id: user.id };
 
     return {
       access_token: await this.jwtService.signAsync(payload),
