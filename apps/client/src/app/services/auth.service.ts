@@ -12,6 +12,11 @@ export class AuthService {
     this.token = this.ls.getData(TOKEN_KEY) ?? '';
   }
 
+  public setToken(t: string) {
+    this.ls.saveData(TOKEN_KEY, t);
+    this.token = t;
+  }
+
   public get headers() {
     return {
       Authorization: `Token ${this.token}`,

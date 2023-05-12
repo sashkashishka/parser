@@ -1,10 +1,14 @@
 import { FormControl } from "@angular/forms";
 
 export interface iFormValues {
-  name: string;
+  username: string;
   password: string;
 }
 
 export type tNgFormValues = {
   [K in keyof iFormValues]: FormControl<iFormValues[K]>;
+}
+
+export interface iLoginRes {
+  access_token: string;
 }

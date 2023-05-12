@@ -1,21 +1,17 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
-import { transition } from '@angular/animations';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormService } from './form.service';
-import { tNgFormValues } from '../types';
-import { Validators } from '@angular/forms';
-import { matFormFieldAnimations } from '@angular/material/form-field';
+import { iFormValues, tNgFormValues } from '../types';
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
-  animations: [matFormFieldAnimations.transitionMessages],
-  // providers: [FormService],
+  providers: [FormService],
 })
 export class FormComponent {
   authForm = new FormGroup<tNgFormValues>({
-    name: new FormControl<string>('', {
+    username: new FormControl<string>('', {
       nonNullable: true,
       initialValueIsDefault: true,
       validators: [Validators.required],
@@ -27,5 +23,21 @@ export class FormComponent {
     }),
   });
 
-  // constructor(private formService: FormService) {}
+  constructor(private formService: FormService) {}
+
+  public get username() {
+    return this.authForm.get('username');
+  }
+
+  public get password() {
+    return this.authForm.get('password');
+  }
+
+  public get submitting() {
+    return this.formService.submitting;
+  }
+
+  public onSubmit() {
+    return this.formService.submit(this.authForm.value as iFormValues);
+  }
 }

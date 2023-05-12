@@ -6,10 +6,12 @@
   height: 100%;
 }
 
-.card-content {
-  display: flex;
-  flex-direction: column;
+.card {
   width: 50%;
   min-width: 288px;
-  height: 50%;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
 }
