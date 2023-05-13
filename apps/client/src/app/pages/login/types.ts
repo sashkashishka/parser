@@ -8,7 +8,3 @@ export interface iFormValues {
 export type tNgFormValues = {
   [K in keyof iFormValues]: FormControl<iFormValues[K]>;
 }
-
-export interface iLoginRes {
-  access_token: string;
-}

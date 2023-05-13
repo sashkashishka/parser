@@ -33,6 +33,6 @@ export class SocketService {
 
   private handleDisconnect() {
     this.router.navigate(['/']);
-    this.authService.clearToken();
+    this.authService.clearUser();
   }
 }

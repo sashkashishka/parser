@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/services/auth.service';
-import { iFormValues, iLoginRes } from '../types';
+import { iFormValues } from '../types';
 import { API } from 'src/app/constants';
+import { iUser } from 'src/app/types';
 
 @Injectable()
 export class FormService {
@@ -22,9 +23,9 @@ export class FormService {
 
     this.submitting = true;
 
-    return this.httpClient.post<iLoginRes>(API.LOGIN, values).subscribe({
+    return this.httpClient.post<iUser>(API.LOGIN, values).subscribe({
       next: (data) => {
-        this.authService.setToken(data.access_token);
+        this.authService.setUser(data);
         this.submitting = false;
 
         this.router.navigate(['/parser']);

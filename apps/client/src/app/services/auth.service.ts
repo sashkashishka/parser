@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TOKEN_KEY } from '../constants';
 import { LocalStorageService } from './local-storage.service';
+import { iUser } from '../types';
 
 @Injectable({
   providedIn: 'root',
@@ -8,20 +9,28 @@ import { LocalStorageService } from './local-storage.service';
 export class AuthService {
   private token: string = '';
 
+  private user = {} as iUser;
+
   constructor(private ls: LocalStorageService) {
     this.token = this.ls.getData(TOKEN_KEY) ?? '';
   }
 
-  public setToken(t: string) {
-    this.ls.saveData(TOKEN_KEY, t);
-    document.cookie = `token=${t}; samesite=strict`;
-    this.token = t;
+  public setUser(user: iUser) {
+    this.ls.saveData(TOKEN_KEY, user.access_token);
+    document.cookie = `token=${user.access_token}; samesite=strict`;
+    this.token = user.access_token;
+    this.user = user;
   }
 
-  public clearToken() {
+  public clearUser() {
     this.ls.removeData(TOKEN_KEY);
     document.cookie = `token=${this.token}; max-age=-1`;
     this.token = '';
+    this.user = {} as iUser;
+  }
+
+  public getUser() {
+    return this.user;
   }
 
   public get headers() {
