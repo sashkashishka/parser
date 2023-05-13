@@ -18,7 +18,7 @@ export class ParseUnitComponent implements OnInit {
   public parseUnit: iParseUnit;
 
   @Output()
-  public refreshParseUnitList = new EventEmitter();
+  public onBottomSheetClose = new EventEmitter();
 
   @Output()
   public deleteParseUnit = new EventEmitter<number>();
@@ -31,7 +31,7 @@ export class ParseUnitComponent implements OnInit {
 
   ngOnInit(): void {
     switch (true) {
-      case this.parseUnit === undefined: {
+      case this.parseUnit.id === 0: {
         this.state = PARSE_UNIT_STATE.CREATE;
         this.openForm();
 
@@ -71,8 +71,8 @@ export class ParseUnitComponent implements OnInit {
     });
 
     this.bottomSheetRef.afterDismissed().subscribe(() => {
-      console.log(123)
-      this.refreshParseUnitList.emit();
+
+      this.onBottomSheetClose.emit();
 
       this.bottomSheetRef = undefined;
     });

@@ -12,6 +12,13 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class SidebarComponent implements OnInit {
   public parseUnits: iParseUnit[] = [];
 
+  public emptyParseUnit: iParseUnit = {
+    id: 0,
+    name: '',
+    frequency: 10000,
+    siteUrl: '',
+  };
+
   constructor(
     private sidebarService: SidebarService,
     private snackbar: MatSnackBar,
@@ -20,20 +27,6 @@ export class SidebarComponent implements OnInit {
   ngOnInit(): void {
     this.fetchParseUnits();
   }
-
-  public fetchParseUnits() {
-    return this.sidebarService.getParseUnits().subscribe({
-      next: (parseUnits) => {
-        this.parseUnits = parseUnits;
-      },
-      error: (error) => {
-        this.snackbar.open(error.message, 'Got it', {
-          duration: 4000,
-        });
-      },
-    });
-  }
-
 
   public deleteParseUnit(id: number) {
     return this.sidebarService.deleteParseUnit(id).subscribe({
@@ -47,4 +40,29 @@ export class SidebarComponent implements OnInit {
       },
     });
   }
+
+  public onBottomSheetClose() {
+    this.fetchParseUnits();
+    this.setIsCreateParseUnit(false);
+  }
+
+  public isCreateParseUnit = false;
+
+  public setIsCreateParseUnit(v: boolean) {
+    this.isCreateParseUnit = v;
+  }
+
+  private fetchParseUnits() {
+    return this.sidebarService.getParseUnits().subscribe({
+      next: (parseUnits) => {
+        this.parseUnits = parseUnits;
+      },
+      error: (error) => {
+        this.snackbar.open(error.message, 'Got it', {
+          duration: 4000,
+        });
+      },
+    });
+  }
+
 }
