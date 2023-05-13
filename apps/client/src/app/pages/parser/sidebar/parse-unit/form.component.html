@@ -1,0 +1,56 @@
+<form [formGroup]="parseUnitForm" class="form" (ngSubmit)="onSubmit()">
+
+  <h2 class="title">
+    <ng-container *ngIf="data.state === 'edit'">
+      Update "{{ data.parseUnit.name }}" parse unit
+    </ng-container>
+    <ng-container *ngIf="data.state === 'create'">
+      Create parse unit
+    </ng-container>
+  </h2>
+
+
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput placeholder="Enter name" formControlName="name" />
+
+    <mat-error *ngIf="name?.touched && name?.errors?.['required']" align="end">
+      Name is required
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Site url</mat-label>
+    <input matInput placeholder="Enter site url" formControlName="siteUrl" />
+
+    <mat-error *ngIf="siteUrl?.touched && siteUrl?.errors?.['required']" align="end">
+      Site url is required
+    </mat-error>
+    <mat-error *ngIf="siteUrl?.touched && siteUrl?.errors?.['pattern']" align="end">
+      Must be like http://olx.ua
+    </mat-error>
+  </mat-form-field>
+
+  <mat-form-field appearance="fill">
+    <mat-label>Frequency (in ms)</mat-label>
+    <input matInput placeholder="Enter in ms" formControlName="frequency" type="number" />
+
+    <mat-error *ngIf="frequency?.touched && frequency?.errors?.['required']" align="end">
+      Frequency is required
+    </mat-error>
+
+    <mat-error *ngIf="frequency?.touched && frequency?.errors?.['min']" align="end">
+      Too low value. Need more than 5000
+    </mat-error>
+  </mat-form-field>
+
+  <button type="submit" mat-stroked-button color="primary" [disabled]="submitting || parseUnitForm.invalid">
+    <ng-container *ngIf="data.state === 'edit'">
+      Update
+    </ng-container>
+
+    <ng-container *ngIf="data.state === 'create'">
+      Create
+    </ng-container>
+  </button>
+</form>

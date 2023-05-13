@@ -36,7 +36,7 @@ export class ParseUnitController {
     @Body() parseUnit: ParseUnitDto,
   ) {
     const user = req.user;
-    return this.parseUnitService.addParseUnit(user.id, parseUnit);
+    return this.parseUnitService.addParseUnit((user.id), parseUnit);
   }
 
   @Get(':id')
@@ -48,7 +48,10 @@ export class ParseUnitController {
   @Patch(':id')
   @HttpCode(HttpStatus.OK)
   updateParseUnit(@Param('id') id: string, @Body() parseUnit: ParseUnitDto) {
-    return this.parseUnitService.updateParseUnit({ ...parseUnit, id: Number(id) });
+    return this.parseUnitService.updateParseUnit({
+      ...parseUnit,
+      id: Number(id),
+    });
   }
 
   @Delete(':id')

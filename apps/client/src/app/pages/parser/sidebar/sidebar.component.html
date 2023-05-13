@@ -1,1 +1,13 @@
-<p>sidebar works!</p>
+<div class="list">
+  <app-parse-unit
+    *ngFor="let parseUnit of parseUnits"
+    [parseUnit]="parseUnit"
+    (refreshParseUnitList)="fetchParseUnits()"
+    (deleteParseUnit)="deleteParseUnit($event)"
+  ></app-parse-unit>
+
+  <div *ngIf="parseUnits.length === 0">
+    empty
+
+  </div>
+</div>
