@@ -9,22 +9,22 @@ import { SocketService } from './socket.service';
   providers: [SocketService, ParserService],
 })
 export class ParserComponent implements OnInit, OnDestroy {
-  constructor(private parseUnitService: ParserService) {}
+  constructor(private parserService: ParserService) {}
 
   ngOnInit() {
-    this.parseUnitService.connect();
+    this.parserService.connect();
   }
 
   ngOnDestroy(): void {
-    this.parseUnitService.disconnect();
+    this.parserService.disconnect();
   }
 
   get init() {
-    return this.parseUnitService.init;
+    return this.parserService.init;
   }
 
   onClick() {
     console.log('click');
-    this.parseUnitService.emitInit();
+    this.parserService.emitInit();
   }
 }
