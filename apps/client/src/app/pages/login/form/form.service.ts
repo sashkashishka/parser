@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { AuthService } from 'src/app/services/auth.service';
-import { iFormValues } from '../types';
+import { iAuthFormValues } from '../types';
 import { API } from 'src/app/constants';
 import { iUser } from 'src/app/types';
 
@@ -18,7 +18,7 @@ export class FormService {
 
   public submitting = false;
 
-  public submit(values: iFormValues) {
+  public submit(values: iAuthFormValues) {
     if (this.submitting) return;
 
     this.submitting = true;

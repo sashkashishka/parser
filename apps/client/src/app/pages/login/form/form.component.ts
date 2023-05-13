@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { FormService } from './form.service';
-import { iFormValues, tNgFormValues } from '../types';
+import { iAuthFormValues, tNgAuthFormValues } from '../types';
 
 @Component({
   selector: 'app-form',
@@ -10,7 +10,7 @@ import { iFormValues, tNgFormValues } from '../types';
   providers: [FormService],
 })
 export class FormComponent {
-  authForm = new FormGroup<tNgFormValues>({
+  authForm = new FormGroup<tNgAuthFormValues>({
     username: new FormControl<string>('', {
       nonNullable: true,
       initialValueIsDefault: true,
@@ -38,6 +38,6 @@ export class FormComponent {
   }
 
   public onSubmit() {
-    return this.formService.submit(this.authForm.value as iFormValues);
+    return this.formService.submit(this.authForm.value as iAuthFormValues);
   }
 }
