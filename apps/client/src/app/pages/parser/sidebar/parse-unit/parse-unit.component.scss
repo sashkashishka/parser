@@ -1,19 +1,11 @@
-.card-view {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  grid-gap: 16px;
-  padding: 8px;
-}
-
 .site-url-view {
-  width: 288px;
-  white-space: nowrap;
+  max-width: 350px;
+  white-space: wrap;
+  word-break: break-all;
   overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .controls {
   display: flex;
-  flex-direction: column;
   justify-content: space-between;
 }

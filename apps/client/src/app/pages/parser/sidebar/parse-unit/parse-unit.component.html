@@ -1,19 +1,17 @@
-<mat-card class="card-view" *ngIf="state !== 'create'">
-  <mat-list>
-    <mat-list-item>Name: {{parseUnit.name}}</mat-list-item>
-    <mat-list-item class="site-url-view">SiteUrl: {{parseUnit.siteUrl}}
-      parseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrlparseUnit.siteUrl
-    </mat-list-item>
-    <mat-list-item>Frequency: {{ parseUnit.frequency }}ms</mat-list-item>
-  </mat-list>
+<mat-card *ngIf="state !== 'create'">
+  <mat-card-content>
+    <p>Name: {{parseUnit.name}}</p>
+    <p class="site-url-view">SiteUrl: {{parseUnit.siteUrl}}</p>
+    <p>Frequency: {{ parseUnit.frequency }}ms</p>
 
-  <div class="controls">
-    <button mat-icon-button (click)="edit()">
-      <mat-icon>edit</mat-icon>
-    </button>
+    <mat-card-actions class="controls">
+      <button mat-icon-button (click)="edit()">
+        <mat-icon>edit</mat-icon>
+      </button>
 
-    <button mat-icon-button (click)="delete()">
-      <mat-icon>delete</mat-icon>
-    </button>
-  </div>
+      <button mat-icon-button (click)="delete()">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-card-actions>
+  </mat-card-content>
 </mat-card>
