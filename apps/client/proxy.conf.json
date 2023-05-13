@@ -4,5 +4,9 @@
     "pathRewrite": {
       "^/api": ""
     }
+  },
+  "/socket.io": {
+    "target": "ws://localhost:8000",
+    "ws": true
   }
 }

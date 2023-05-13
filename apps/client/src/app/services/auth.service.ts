@@ -14,7 +14,14 @@ export class AuthService {
 
   public setToken(t: string) {
     this.ls.saveData(TOKEN_KEY, t);
+    document.cookie = `token=${t}; samesite=strict`;
     this.token = t;
+  }
+
+  public clearToken() {
+    this.ls.removeData(TOKEN_KEY);
+    document.cookie = `token=${this.token}; max-age=-1`;
+    this.token = '';
   }
 
   public get headers() {
