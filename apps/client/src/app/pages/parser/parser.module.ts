@@ -1,12 +1,12 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ParserRoutingModule } from './parser-routing.module';
-import { ParseUnitComponent } from './parse-unit/parse-unit.component';
-import { SidebarComponent } from './parse-unit/sidebar/sidebar.component';
-import { ResultsComponent } from './parse-unit/results/results.component';
+import { ParserComponent } from './parser.component';
+import { SidebarComponent } from './sidebar/sidebar.component';
+import { ResultsComponent } from './results/results.component';
 
 @NgModule({
-  declarations: [ParseUnitComponent, SidebarComponent, ResultsComponent],
+  declarations: [ParserComponent, SidebarComponent, ResultsComponent],
   imports: [CommonModule, ParserRoutingModule],
 })
 export class ParserModule {}

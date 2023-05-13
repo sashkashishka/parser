@@ -1,15 +1,15 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ParseUnitService } from './parse-unit.service';
+import { ParserService } from './parser.service';
 import { SocketService } from './socket.service';
 
 @Component({
-  selector: 'app-parse-unit',
-  templateUrl: './parse-unit.component.html',
-  styleUrls: ['./parse-unit.component.scss'],
-  providers: [SocketService, ParseUnitService],
+  selector: 'app-parser',
+  templateUrl: './parser.component.html',
+  styleUrls: ['./parser.component.scss'],
+  providers: [SocketService, ParserService],
 })
-export class ParseUnitComponent implements OnInit, OnDestroy {
-  constructor(private parseUnitService: ParseUnitService) {}
+export class ParserComponent implements OnInit, OnDestroy {
+  constructor(private parseUnitService: ParserService) {}
 
   ngOnInit() {
     this.parseUnitService.connect();

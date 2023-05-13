@@ -1,12 +1,12 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { SocketService } from './socket.service';
-import { SOCKET_EVENTS } from '../constants';
+import { SOCKET_EVENTS } from './constants';
 import { AuthService } from 'src/app/services/auth.service';
 import { iAdsEvent, iErrorEvent, iInitEvent } from './types';
 
 @Injectable()
-export class ParseUnitService {
+export class ParserService {
   constructor(
     private socketService: SocketService,
     private authService: AuthService,

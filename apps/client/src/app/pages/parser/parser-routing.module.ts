@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { ParseUnitComponent } from './parse-unit/parse-unit.component';
+import { ParserComponent } from './parser.component';
 
 const routes: Routes = [
   {
     path: '',
-    component: ParseUnitComponent,
+    component: ParserComponent,
   },
 ];
 
