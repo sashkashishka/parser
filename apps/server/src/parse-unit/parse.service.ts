@@ -36,17 +36,19 @@ export class ParseService implements OnModuleDestroy {
     this.socket = socket;
   }
 
-  public start(parseUnits: iParseUnit[], endTime: Date) {
-    if (this.pollingSubscription) return this.cacheMediator.adsStream;
+  public setConfig(parseUnits: iParseUnit[], endTime: Date) {
+    this.activeParseUnits = parseUnits || this.activeParseUnits;
+    this.endTime = endTime || this.endTime;
+  }
 
-    this.activeParseUnits = parseUnits;
-    this.endTime = endTime;
+  public start() {
+    if (this.pollingSubscription) return this.cacheMediator.adsStream;
 
     this.abortController = new AbortController();
 
     this.cacheMediator = new CacheMediator();
-    this.pollingPool$ = createPollingPool$(parseUnits, {
-      endTime,
+    this.pollingPool$ = createPollingPool$(this.activeParseUnits, {
+      endTime: this.endTime,
       signal: this.abortController.signal,
     });
 
@@ -76,8 +78,8 @@ export class ParseService implements OnModuleDestroy {
 
   public get parseOptions(): iParseOptions {
     return {
-      endTime: this.endTime,
-      parseUnits: this.activeParseUnits,
+      endTime: this.endTime ?? new Date(),
+      parseUnits: this.activeParseUnits ?? [],
     };
   }
 

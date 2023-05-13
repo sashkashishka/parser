@@ -1,5 +1,5 @@
 export enum ParseUnitEvents {
-  init = 'init',
+  config = 'config',
   start = 'start',
   resubscribe = 'resubscribe',
   stop = 'stop',

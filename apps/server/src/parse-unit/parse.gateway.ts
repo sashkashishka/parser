@@ -14,8 +14,7 @@ import { getAuthToken } from 'src/utils/getAuthToken';
 import { envVariables } from 'src/constants';
 import { ERROR_CODES, stringifyErrorCode } from 'src/utils/errorCodes';
 import { ParseUnitEvents } from './constants';
-import { InitEventResDto } from './dto/InitEvent.dto';
-import { StartEventReqDto } from './dto/StartEvent.dto';
+import { ConfigEventReqDto, ConfigEventResDto } from './dto/ConfigEvent.dto';
 import { StopEventResDto } from './dto/StopEvent.dto';
 import { ErrorEventResDto } from './dto/ErrorEvent.dto';
 import { ParseService } from './parse.service';
@@ -23,9 +22,7 @@ import { ParseService } from './parse.service';
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(AuthSocketFilter)
 @UseGuards(AuthGuard)
-export class ParseGateway
-  implements OnGatewayInit, OnGatewayConnection
-{
+export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(
     private jwtService: JwtService,
     private parseService: ParseService,
@@ -51,20 +48,21 @@ export class ParseGateway
     }
   }
 
-  @SubscribeMessage(ParseUnitEvents.init)
-  async handleInit(): Promise<InitEventResDto> {
+  @SubscribeMessage(ParseUnitEvents.config)
+  handleConfig(
+    @MessageBody() { payload }: ConfigEventReqDto,
+  ): ConfigEventResDto {
+    this.parseService.setConfig(payload?.parseUnits, payload?.endTime);
+
     return {
-      event: ParseUnitEvents.init,
+      event: ParseUnitEvents.config,
       data: this.parseService.parseOptions,
     };
   }
 
   @SubscribeMessage(ParseUnitEvents.start)
-  handeStart(@MessageBody() { payload }: StartEventReqDto) {
-    return this.parseService.start(
-      payload.parseUnits,
-      new Date(payload.endTime),
-    );
+  handeStart() {
+    return this.parseService.start();
   }
 
   @SubscribeMessage(ParseUnitEvents.resubscribe)
