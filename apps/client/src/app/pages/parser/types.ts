@@ -5,7 +5,11 @@ export interface iParseUnit {
   name: string;
 }
 
-export interface iInitEvent {
+export interface iParseUnitSelectable extends iParseUnit {
+  selected: boolean;
+}
+
+export interface iConfigEvent {
   endTime: Date;
   parseUnits: iParseUnit[];
 } 

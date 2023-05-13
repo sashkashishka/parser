@@ -1,5 +1,5 @@
 export enum SOCKET_EVENTS {
-  INIT = 'init',
+  CONFIG = 'config',
   ERROR = 'error',
   ADS = 'ads',
   START = 'start',

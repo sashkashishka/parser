@@ -8,6 +8,8 @@ import { ResultsComponent } from './results/results.component';
 import { ParserMaterialModule } from './material.module';
 import { ParseUnitComponent } from './sidebar/parse-unit/parse-unit.component';
 import { ParseUnitFormComponent } from './sidebar/parse-unit/form.component';
+import { ParserService } from './parser.service';
+import { SocketService } from './socket.service';
 
 @NgModule({
   declarations: [
@@ -24,5 +26,6 @@ import { ParseUnitFormComponent } from './sidebar/parse-unit/form.component';
     FormsModule,
     ReactiveFormsModule,
   ],
+  providers: [ParserService, SocketService],
 })
 export class ParserModule {}

@@ -8,21 +8,25 @@
       </button>
     </div>
 
-    <div class="list">
-      <app-parse-unit *ngFor="let parseUnit of parseUnits" [parseUnit]="parseUnit"
-        (onBottomSheetClose)="onBottomSheetClose()" (deleteParseUnit)="deleteParseUnit($event)"></app-parse-unit>
+    <ng-container *ngIf="selectableParseUnits | async as parseUnits">
+      <div class="list">
+        <app-parse-unit *ngFor="let parseUnit of parseUnits" [parseUnit]="parseUnit" (onFormClose)="onFormClose()"
+          (deleteParseUnit)="deleteParseUnit($event)" (onToggle)="onToggle($event)">
+        </app-parse-unit>
 
-      <app-parse-unit *ngIf="isCreateParseUnit" [parseUnit]="emptyParseUnit" (onBottomSheetClose)="onBottomSheetClose()"
-        (deleteParseUnit)="deleteParseUnit($event)"></app-parse-unit>
-    </div>
+        <app-parse-unit *ngIf="isCreateParseUnit" [parseUnit]="emptyParseUnit" (onFormClose)="onFormClose()"
+          (deleteParseUnit)="deleteParseUnit($event)"></app-parse-unit>
+      </div>
 
-    <div class="empty-placeholder" *ngIf="parseUnits.length === 0">
-      <img src="../../../../assets/empty-placeholder.jpeg" alt="" width="220px" height="220px" />
+      <div class="empty-placeholder" *ngIf="!parseUnits?.length">
+        <img src="../../../../assets/empty-placeholder.jpeg" alt="" width="220px" height="220px" />
 
-      <p>
-        There is no parse unit. Press + button to add.
-      </p>
-    </div>
+        <p>
+          There is no parse unit. Press + button to add.
+        </p>
+      </div>
+    </ng-container>
+
   </div>
 
   <div class="parser">

@@ -18,7 +18,10 @@ export class ParseUnitComponent implements OnInit {
   public parseUnit: iParseUnit;
 
   @Output()
-  public onBottomSheetClose = new EventEmitter();
+  public onToggle = new EventEmitter();
+
+  @Output()
+  public onFormClose = new EventEmitter();
 
   @Output()
   public deleteParseUnit = new EventEmitter<number>();
@@ -42,6 +45,8 @@ export class ParseUnitComponent implements OnInit {
         this.state = PARSE_UNIT_STATE.VIEW;
     }
   }
+
+  public toggle() {}
 
   public edit() {
     this.setState(PARSE_UNIT_STATE.EDIT);
@@ -72,7 +77,7 @@ export class ParseUnitComponent implements OnInit {
 
     this.bottomSheetRef.afterDismissed().subscribe(() => {
 
-      this.onBottomSheetClose.emit();
+      this.onFormClose.emit();
 
       this.bottomSheetRef = undefined;
     });

@@ -1,17 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { SidebarService } from './sidebar.service';
-import { iParseUnit } from '../types';
+import { Component, OnInit, AfterViewInit } from '@angular/core';
+import { iParseUnit, iParseUnitSelectable } from '../types';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { ParserService } from '../parser.service';
 
+// TODO: refactor (
+// * logic of isCreateParseUnit
+// * logic of delete
+// * logic of closing form
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
-  providers: [SidebarService],
 })
-export class SidebarComponent implements OnInit {
-  public parseUnits: iParseUnit[] = [];
-
+export class SidebarComponent implements AfterViewInit {
   public emptyParseUnit: iParseUnit = {
     id: 0,
     name: '',
@@ -20,18 +21,23 @@ export class SidebarComponent implements OnInit {
   };
 
   constructor(
-    private sidebarService: SidebarService,
     private snackbar: MatSnackBar,
+    private parserService: ParserService,
   ) {}
 
-  ngOnInit(): void {
-    this.fetchParseUnits();
+  ngAfterViewInit(): void {
+    this.parserService.emitConfig({});
+    this.parserService.parseUnits$.next();
+  }
+
+  public get selectableParseUnits() {
+    return this.parserService.selectableParseUnits$;
   }
 
   public deleteParseUnit(id: number) {
-    return this.sidebarService.deleteParseUnit(id).subscribe({
+    return this.parserService.deleteParseUnit(id).subscribe({
       next: () => {
-        this.fetchParseUnits();
+        this.parserService.parseUnits$.next();
       },
       error: (error) => {
         this.snackbar.open(error.message, 'Got it', {
@@ -41,8 +47,12 @@ export class SidebarComponent implements OnInit {
     });
   }
 
-  public onBottomSheetClose() {
-    this.fetchParseUnits();
+  public onToggle(parseUnit: iParseUnit) {
+    // this.parserService.toggleActiveParseUnit(parseUnit);
+  }
+
+  public onFormClose() {
+    this.parserService.parseUnits$.next();
     this.setIsCreateParseUnit(false);
   }
 
@@ -51,18 +61,4 @@ export class SidebarComponent implements OnInit {
   public setIsCreateParseUnit(v: boolean) {
     this.isCreateParseUnit = v;
   }
-
-  private fetchParseUnits() {
-    return this.sidebarService.getParseUnits().subscribe({
-      next: (parseUnits) => {
-        this.parseUnits = parseUnits;
-      },
-      error: (error) => {
-        this.snackbar.open(error.message, 'Got it', {
-          duration: 4000,
-        });
-      },
-    });
-  }
-
 }

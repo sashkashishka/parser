@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { Socket, io } from 'socket.io-client';
 import { AuthService } from 'src/app/services/auth.service';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root',
+})
 export class SocketService {
   private io: Socket;
 

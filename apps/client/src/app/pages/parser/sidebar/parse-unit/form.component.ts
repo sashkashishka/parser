@@ -1,23 +1,22 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import {
   MatBottomSheetRef,
   MAT_BOTTOM_SHEET_DATA,
 } from '@angular/material/bottom-sheet';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { SidebarService } from '../sidebar.service';
 import {
   PARSE_UNIT_STATE,
   iBottomSheetConfig,
   tNgParseUnitFormValues,
 } from './types';
-import { HttpErrorResponse } from '@angular/common/http';
+import { ParserService } from '../../parser.service';
 
 @Component({
   selector: 'app-parse-unit-form',
   templateUrl: './form.component.html',
   styleUrls: ['./form.component.scss'],
-  providers: [SidebarService],
 })
 export class ParseUnitFormComponent implements OnInit {
   public parseUnitForm = new FormGroup<tNgParseUnitFormValues>({
@@ -46,7 +45,7 @@ export class ParseUnitFormComponent implements OnInit {
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: iBottomSheetConfig,
     private bottomSheetRef: MatBottomSheetRef<ParseUnitFormComponent>,
-    private sidebarService: SidebarService,
+    private parserService: ParserService,
     private snackback: MatSnackBar,
   ) {}
 
@@ -82,14 +81,12 @@ export class ParseUnitFormComponent implements OnInit {
     let method: 'addParseUnit' | 'updateParseUnit' = 'addParseUnit';
     let successMsg = 'Parse unit created';
 
-    console.log(this.data)
-
     if (this.data.state === PARSE_UNIT_STATE.EDIT) {
       method = 'updateParseUnit';
       successMsg = 'Parse unit updated';
     }
 
-    return this.sidebarService[method]({
+    return this.parserService[method]({
       ...this.parseUnitForm.value,
       id: this.data.parseUnit.id,
     }).subscribe({
