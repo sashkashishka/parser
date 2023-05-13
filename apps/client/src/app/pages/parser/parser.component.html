@@ -1,5 +1,16 @@
-<p>parser works!</p>
+<div class="container">
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+    <h1 class="app-name">Olx scrapper</h1>
+  </mat-toolbar>
 
-<p>INIT {{ init | json }}</p>
+  <mat-sidenav-container class="sidenav-container" >
+    <mat-sidenav #snav fixedTopGap="56">
+      sidenav
+    </mat-sidenav>
 
-<button (click)="onClick()">send event</button>
+    <mat-sidenav-content>
+      content
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
