@@ -83,14 +83,7 @@ export class ParserService {
           headers: this.authService.headers,
         },
       )
-      .pipe(
-        tap(() => this.refetchParseUnit$.next()),
-        catchError((err) => {
-          this.snackbar.open(err.message, 'Got it', { duration: 3000 });
-
-          return EMPTY;
-        }),
-      );
+      .pipe(tap(() => this.refetchParseUnit$.next()));
   }
 
   public updateParseUnit(parseUnit: Partial<iParseUnit>) {
@@ -102,14 +95,7 @@ export class ParserService {
           headers: this.authService.headers,
         },
       )
-      .pipe(
-        tap(() => this.refetchParseUnit$.next()),
-        catchError((err) => {
-          this.snackbar.open(err.message, 'Got it', { duration: 3000 });
-
-          return EMPTY;
-        }),
-      );
+      .pipe(tap(() => this.refetchParseUnit$.next()));
   }
 
   public deleteParseUnit(id: number) {

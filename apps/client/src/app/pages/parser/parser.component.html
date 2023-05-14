@@ -1,6 +1,6 @@
 <div class="container" *ngLet="parserService.status$ | async as status">
 
-  <mat-toolbar [color]="status === 'parsing' ? 'warn' : 'primary' ">
+  <mat-toolbar class="toolbar" [color]="status === 'parsing' ? 'warn' : 'primary' ">
     <button mat-icon-button (click)="snav.toggle()">
       <mat-icon>menu</mat-icon>
     </button>

@@ -63,8 +63,6 @@ export class ParseUnitComponent implements OnInit {
   }
 
   public openForm() {
-    if (this.bottomSheetRef) return;
-
     this.bottomSheetRef = this.bottomSheet.open<
       ParseUnitFormComponent,
       iBottomSheetConfig
