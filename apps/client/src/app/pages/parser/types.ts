@@ -1,4 +1,8 @@
-import { PARSE_STATUS } from "./constants";
+import { PARSE_STATUS } from './constants';
+
+export interface iAd {
+  id: number;
+}
 
 export interface iParseUnit {
   id: number;
@@ -11,15 +15,15 @@ export interface iParseUnit {
 export interface iConfigEvent {
   endTime: Date;
   parseUnits: iParseUnit[];
-} 
+}
 
 export interface iErrorEvent {
-  code: string; 
+  code: string;
   message: string;
 }
 
 export type tStatusEvent = PARSE_STATUS;
 
-export interface iAdsEvent extends iParseUnit {} 
+export interface iAdsEvent extends iParseUnit {}
 
 export interface iCompleteEvent {}

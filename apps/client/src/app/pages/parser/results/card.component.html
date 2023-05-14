@@ -1,0 +1,6 @@
+<mat-card [class.notViewed]="!isViewed" (click)="onClick()">
+  <mat-card-content>
+    {{isViewed | json}}
+    <p>Name: {{ad.id}}</p>
+  </mat-card-content>
+</mat-card>

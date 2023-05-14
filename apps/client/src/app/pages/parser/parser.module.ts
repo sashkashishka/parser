@@ -11,6 +11,7 @@ import { ParseUnitFormComponent } from './sidebar/parse-unit/form.component';
 import { ParserService } from './parser.service';
 import { SocketService } from './socket.service';
 import { LetDirective } from 'src/app/let.directive';
+import { CardComponent } from './results/card.component';
 
 @NgModule({
   declarations: [
@@ -19,6 +20,7 @@ import { LetDirective } from 'src/app/let.directive';
     ResultsComponent,
     ParseUnitComponent,
     ParseUnitFormComponent,
+    CardComponent,
     LetDirective,
   ],
   imports: [

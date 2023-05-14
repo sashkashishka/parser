@@ -11,3 +11,10 @@
 .empty-placeholder p {
   margin-top: 16px;
 }
+
+.list {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-gap: 16px;
+  padding: 16px;
+}
