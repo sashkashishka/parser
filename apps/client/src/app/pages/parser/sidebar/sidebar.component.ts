@@ -50,13 +50,11 @@ export class SidebarComponent implements AfterViewInit {
   public onToggle(id: iParseUnit['id'], parseUnits: iParseUnitSelectable[]) {
     const parseUnit = parseUnits.find((unit) => unit.id === id);
     const selectedArr = parseUnits.filter((unit) => unit.selected);
-    const isSelected = selectedArr.find((unit) => unit.id === id);
+    const withoutParseUnitArr = selectedArr.filter((unit) => unit.id !== id);
 
-    let result = selectedArr;
+    let result = withoutParseUnitArr;
 
-    if (isSelected) {
-      result = selectedArr.filter((unit) => unit.id !== id);
-    } else {
+    if (selectedArr.length === withoutParseUnitArr.length) {
       result = selectedArr.concat([parseUnit!]);
     }
 
