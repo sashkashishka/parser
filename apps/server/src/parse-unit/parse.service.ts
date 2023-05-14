@@ -2,7 +2,7 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { Socket } from 'socket.io';
 import { iParseUnit } from 'src/types';
-import { ParseUnitEvents } from './constants';
+import { ParseStatus, ParseUnitEvents } from './constants';
 import { CacheMediator } from './core/cache-mediator';
 import { createPollingPool$ } from './core/polling-pool$';
 import {
@@ -58,7 +58,7 @@ export class ParseService implements OnModuleDestroy {
   }
 
   public resubscribe() {
-    if (this.status() === 'idle') return undefined;
+    if (this.status() === ParseStatus.IDLE) return undefined;
 
     return this.cacheMediator.adsStream;
   }
@@ -68,12 +68,10 @@ export class ParseService implements OnModuleDestroy {
     this.abortController?.abort?.();
     this.pollingSubscription?.unsubscribe?.();
     this.pollingSubscription = undefined;
-    this.endTime = undefined;
-    this.activeParseUnits = undefined;
   }
 
   public status() {
-    return this.pollingSubscription ? 'active' : 'idle';
+    return this.pollingSubscription ? ParseStatus.PARSING : ParseStatus.IDLE;
   }
 
   public get parseOptions(): iParseOptions {

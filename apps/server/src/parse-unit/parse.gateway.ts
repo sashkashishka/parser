@@ -18,6 +18,7 @@ import { ConfigEventReqDto, ConfigEventResDto } from './dto/ConfigEvent.dto';
 import { StopEventResDto } from './dto/StopEvent.dto';
 import { ErrorEventResDto } from './dto/ErrorEvent.dto';
 import { ParseService } from './parse.service';
+import { StatusEventResDto } from './dto/StatusEvent.dto';
 
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(AuthSocketFilter)
@@ -46,6 +47,14 @@ export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
       });
       socket.disconnect(true);
     }
+  }
+
+  @SubscribeMessage(ParseUnitEvents.status)
+  handleStatus(): StatusEventResDto {
+    return {
+      event: ParseUnitEvents.status,
+      data: this.parseService.status(),
+    };
   }
 
   @SubscribeMessage(ParseUnitEvents.config)
