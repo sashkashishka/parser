@@ -125,7 +125,7 @@ export class ParseService implements OnModuleDestroy {
       },
       complete: () => {
         this.stop();
-        this.socket.emit(ParseUnitEvents.complete);
+        this.socket.emit(ParseUnitEvents.complete, {});
       },
     };
   }

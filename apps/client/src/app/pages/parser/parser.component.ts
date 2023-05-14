@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, AfterViewInit } from '@angular/core';
 import { ParserService } from './parser.service';
 
 @Component({
@@ -6,11 +6,17 @@ import { ParserService } from './parser.service';
   templateUrl: './parser.component.html',
   styleUrls: ['./parser.component.scss'],
 })
-export class ParserComponent implements OnInit, OnDestroy {
+export class ParserComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(public parserService: ParserService) {}
 
   ngOnInit() {
     this.parserService.connect();
+  }
+
+  ngAfterViewInit(): void {
+    this.parserService.emitStatus();
+    this.parserService.emitConfig({});
+    this.parserService.refetchParseUnit();
   }
 
   ngOnDestroy(): void {

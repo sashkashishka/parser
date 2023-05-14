@@ -10,6 +10,7 @@ import { ParseUnitComponent } from './sidebar/parse-unit/parse-unit.component';
 import { ParseUnitFormComponent } from './sidebar/parse-unit/form.component';
 import { ParserService } from './parser.service';
 import { SocketService } from './socket.service';
+import { LetDirective } from 'src/app/let.directive';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { SocketService } from './socket.service';
     ResultsComponent,
     ParseUnitComponent,
     ParseUnitFormComponent,
+    LetDirective,
   ],
   imports: [
     CommonModule,

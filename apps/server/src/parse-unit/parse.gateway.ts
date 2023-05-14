@@ -20,6 +20,7 @@ import { StopEventResDto } from './dto/StopEvent.dto';
 import { ErrorEventResDto } from './dto/ErrorEvent.dto';
 import { ParseService } from './parse.service';
 import { StatusEventResDto } from './dto/StatusEvent.dto';
+import { startWith } from 'rxjs';
 
 @WebSocketGateway({ transports: ['websocket'] })
 @UseFilters(SocketFilter)
@@ -71,10 +72,12 @@ export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   @SubscribeMessage(ParseUnitEvents.start)
-  handeStart(@ConnectedSocket() client: Socket) {
+  async handeStart(@ConnectedSocket() client: Socket) {
     const user = client.user;
 
-    return this.parseService.start(user.id);
+    const stream$ = await this.parseService.start(user.id);
+
+    return stream$.pipe(startWith({ event: ParseUnitEvents.start, data: {} }));
   }
 
   @SubscribeMessage(ParseUnitEvents.resubscribe)

@@ -25,6 +25,9 @@ export class SidebarComponent {
   @Input()
   public status: PARSE_STATUS | null;
 
+  @Input()
+  public parseUnits: iParseUnit[] | null
+
   constructor(
     public parserService: ParserService,
   ) {}

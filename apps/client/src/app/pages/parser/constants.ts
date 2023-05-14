@@ -6,6 +6,7 @@ export enum SOCKET_EVENTS {
   COMPLETE = 'complete',
   START = 'start',
   STOP = 'stop',
+  RESUBSCRIBE = 'resubscribe',
 }
 
 export enum PARSE_STATUS {

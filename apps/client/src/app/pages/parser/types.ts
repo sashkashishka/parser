@@ -8,22 +8,18 @@ export interface iParseUnit {
   selected: boolean;
 }
 
-export interface iCommonEvent {
-  status: PARSE_STATUS;
-}
-
-export interface iConfigEvent extends iCommonEvent {
+export interface iConfigEvent {
   endTime: Date;
   parseUnits: iParseUnit[];
 } 
 
-export interface iErrorEvent extends iCommonEvent {
+export interface iErrorEvent {
   code: string; 
   message: string;
 }
 
 export type tStatusEvent = PARSE_STATUS;
 
-export interface iAdsEvent extends iParseUnit, iCommonEvent {} 
+export interface iAdsEvent extends iParseUnit {} 
 
-export interface iCompleteEvent extends iCommonEvent {}
+export interface iCompleteEvent {}

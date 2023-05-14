@@ -9,6 +9,7 @@ import {
   of,
   switchMap,
   tap,
+  share,
 } from 'rxjs';
 import { SocketService } from './socket.service';
 import { PARSE_STATUS, SOCKET_EVENTS } from './constants';
@@ -16,7 +17,7 @@ import { AuthService } from 'src/app/services/auth.service';
 import { API } from 'src/app/constants';
 import {
   iAdsEvent,
-  iCommonEvent,
+  iCompleteEvent,
   iConfigEvent,
   iErrorEvent,
   iParseUnit,
@@ -37,28 +38,20 @@ export class ParserService {
   public connect() {
     this.socketService.connect();
 
-    this.status$ = new Subject<tStatusEvent>();
+    this.status$ = this.createSocketStream<tStatusEvent>(SOCKET_EVENTS.STATUS);
     this.ads$ = this.createSocketStream<iAdsEvent>(SOCKET_EVENTS.ADS);
+    this.start$ = this.createSocketStream<void>(SOCKET_EVENTS.START);
     this.config$ = this.createSocketStream<iConfigEvent>(SOCKET_EVENTS.CONFIG);
+    this.complete$ = this.createSocketStream<iCompleteEvent>(
+      SOCKET_EVENTS.COMPLETE,
+    );
+    this.stop$ = this.createSocketStream<void>(SOCKET_EVENTS.STOP);
+    this.error$ = this.createSocketStream<iErrorEvent>(SOCKET_EVENTS.ERROR);
+
     this.refetchParseUnit$ = new Subject<void>();
     this.parseUnits$ = this.createParseUnitsStream();
 
-    this.socketService.socket.on(
-      SOCKET_EVENTS.STOP,
-      this.handleStop.bind(this),
-    );
-    this.socketService.socket.on(
-      SOCKET_EVENTS.COMPLETE,
-      this.handleComplete.bind(this),
-    );
-    this.socketService.socket.on(
-      SOCKET_EVENTS.ERROR,
-      this.handleError.bind(this),
-    );
-
-    this.emitStatus();
-    this.emitConfig({});
-    this.refetchParseUnit$.next();
+    this.createPingStatusEffect();
   }
 
   public disconnect() {
@@ -70,7 +63,7 @@ export class ParserService {
   // CRUD
   // **********************
   // **********************
-  public getParseUnits() {
+  private getParseUnits() {
     return this.httpClient.get<iParseUnit[]>(API.GET_PARSE_UNIT_ALL, {
       headers: this.authService.headers,
     });
@@ -139,15 +132,25 @@ export class ParserService {
   // Streams
   // **********************
   // **********************
-  public status$: Subject<tStatusEvent>;
+  public status$: Observable<tStatusEvent>;
 
   public ads$: Observable<iAdsEvent>;
 
   public config$: Observable<iConfigEvent>;
 
+  public start$: Observable<any>;
+
+  public stop$: Observable<any>;
+
+  public complete$: Observable<iCompleteEvent>;
+
+  public error$: Observable<iErrorEvent>;
+
   public parseUnits$: Observable<iParseUnit[]>;
 
   private refetchParseUnit$: Subject<void>;
+
+  public pingStatusEffect$: Observable<any>;
 
   // **********************
   // **********************
@@ -182,27 +185,15 @@ export class ParserService {
     );
   }
 
-  // **********************
-  // **********************
-  // Handlers
-  // **********************
-  // **********************
-  private handleError(event: iErrorEvent) {
-    let message = '';
-
-    try {
-      message = event.code || event.message || JSON.stringify(event);
-    } catch (e) {}
-
-    this.snackbar.open(message);
+  public emitResubscribe() {
+    this.socketService.socket.emit(
+      SOCKET_EVENTS.RESUBSCRIBE,
+      this.authService.createEvent({}),
+    );
   }
 
-  private handleStop() {
-    this.snackbar.open('Parsing stopped', 'Got it', { duration: 5000 });
-  }
-
-  private handleComplete() {
-    this.snackbar.open('Parsing completed', 'Got it', { duration: 5000 });
+  public refetchParseUnit() {
+    this.refetchParseUnit$.next();
   }
 
   // **********************
@@ -210,25 +201,57 @@ export class ParserService {
   // Stream creator
   // **********************
   // **********************
-  private createSocketStream<T extends iCommonEvent>(eventName: SOCKET_EVENTS) {
+  private createSocketStream<T>(eventName: SOCKET_EVENTS) {
     return new Observable<T>((observer) => {
       const handler = (data: T) => {
-        observer.next(data);
+        switch (eventName) {
+          case SOCKET_EVENTS.STATUS: {
+            if (data === PARSE_STATUS.PARSING) {
+              this.emitResubscribe();
+            }
+            break;
+          }
 
-        if (data.status) {
-          this.status$.next(data.status);
+          case SOCKET_EVENTS.STOP: {
+            this.snackbar.open('Parsing stopped', 'Got it', { duration: 5000 });
+            break;
+          }
+
+          case SOCKET_EVENTS.COMPLETE: {
+            this.snackbar.open('Parsing completed', 'Got it', {
+              duration: 5000,
+            });
+            break;
+          }
+
+          case SOCKET_EVENTS.ERROR: {
+            let message = '';
+
+            try {
+              // @ts-ignore
+              message = data?.code || data?.message || JSON.stringify(data);
+            } catch (e) {}
+
+            this.snackbar.open(message);
+            break;
+          }
+
+          default:
+          // noop
         }
+
+        observer.next(data);
       };
 
       this.socketService.socket.on(eventName, handler);
 
       return () => this.socketService.socket.off(eventName, handler);
-    });
+    }).pipe(share());
   }
 
   private createParseUnitsStream() {
     return this.refetchParseUnit$.pipe(
-      switchMap(this.getParseUnits.bind(this)),
+      switchMap(() => this.getParseUnits()),
       catchError((err) => {
         this.snackbar.open(err.message, 'Got it', {
           duration: 4000,
@@ -237,5 +260,20 @@ export class ParserService {
         return of([]);
       }),
     );
+  }
+
+  // **********************
+  // **********************
+  // Effects
+  // **********************
+  // **********************
+  private createPingStatusEffect() {
+    return [
+      this.start$,
+      this.stop$,
+      this.config$,
+      this.complete$,
+      this.error$,
+    ].map((o) => o.subscribe(() => this.emitStatus()));
   }
 }

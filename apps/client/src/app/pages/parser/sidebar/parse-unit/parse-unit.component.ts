@@ -41,14 +41,16 @@ export class ParseUnitComponent implements OnInit {
   }
 
   public toggle() {
-    return this.parserService.updateParseUnit({
-      ...this.parseUnit,
-      selected: !this.parseUnit.selected,
-    });
+    return this.parserService
+      .updateParseUnit({
+        ...this.parseUnit,
+        selected: !this.parseUnit.selected,
+      })
+      .subscribe();
   }
 
   public delete() {
-    return this.parserService.deleteParseUnit(this.parseUnit.id);
+    return this.parserService.deleteParseUnit(this.parseUnit.id).subscribe();
   }
 
   public edit() {
