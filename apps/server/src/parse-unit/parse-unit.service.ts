@@ -14,6 +14,15 @@ export class ParseUnitService {
     });
   }
 
+  getSelectedParseUnits(userId: number) {
+    return this.prisma.parseUnit.findMany({
+      where: {
+        userId,
+        selected: true,
+      },
+    });
+  }
+
   getParseUnitById(id: number) {
     return this.prisma.parseUnit.findMany({
       where: {

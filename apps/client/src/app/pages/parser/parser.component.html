@@ -1,12 +1,18 @@
-<div class="container">
-  <mat-toolbar color="primary">
-    <button mat-icon-button (click)="snav.toggle()"><mat-icon>menu</mat-icon></button>
+<div class="container" *ngFor="let status of [parserService.status$ | async]">
+
+  <mat-toolbar [color]="status === 'parsing' ? 'warn' : 'primary' ">
+    <button mat-icon-button (click)="snav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
     <h1 class="app-name">Olx scrapper</h1>
+    <p class="status">
+      Status: {{status}}
+    </p>
   </mat-toolbar>
 
-  <mat-sidenav-container class="sidenav-container" >
+  <mat-sidenav-container class="sidenav-container">
     <mat-sidenav #snav fixedTopGap="56" opened>
-      <app-sidebar></app-sidebar>
+      <app-sidebar [status]="status"></app-sidebar>
     </mat-sidenav>
 
     <mat-sidenav-content>

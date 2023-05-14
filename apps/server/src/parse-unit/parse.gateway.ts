@@ -5,10 +5,11 @@ import {
   WebSocketGateway,
   OnGatewayConnection,
   OnGatewayInit,
+  ConnectedSocket,
 } from '@nestjs/websockets';
 import { JwtService } from '@nestjs/jwt';
 import { Socket } from 'socket.io';
-import { AuthSocketFilter } from './auth-socket.filter';
+import { SocketFilter } from './socket.filter';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { getAuthToken } from 'src/utils/getAuthToken';
 import { envVariables } from 'src/constants';
@@ -21,7 +22,7 @@ import { ParseService } from './parse.service';
 import { StatusEventResDto } from './dto/StatusEvent.dto';
 
 @WebSocketGateway({ transports: ['websocket'] })
-@UseFilters(AuthSocketFilter)
+@UseFilters(SocketFilter)
 @UseGuards(AuthGuard)
 export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
   constructor(
@@ -61,7 +62,7 @@ export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
   handleConfig(
     @MessageBody() { payload }: ConfigEventReqDto,
   ): ConfigEventResDto {
-    this.parseService.setConfig(payload?.parseUnits, payload?.endTime);
+    this.parseService.setConfig(payload?.endTime);
 
     return {
       event: ParseUnitEvents.config,
@@ -70,8 +71,10 @@ export class ParseGateway implements OnGatewayInit, OnGatewayConnection {
   }
 
   @SubscribeMessage(ParseUnitEvents.start)
-  handeStart() {
-    return this.parseService.start();
+  handeStart(@ConnectedSocket() client: Socket) {
+    const user = client.user;
+
+    return this.parseService.start(user.id);
   }
 
   @SubscribeMessage(ParseUnitEvents.resubscribe)

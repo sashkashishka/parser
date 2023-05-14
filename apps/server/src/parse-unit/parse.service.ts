@@ -1,7 +1,9 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
+import { WsException } from '@nestjs/websockets';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { Socket } from 'socket.io';
 import { iParseUnit } from 'src/types';
+import { ERROR_CODES, stringifyErrorCode } from 'src/utils/errorCodes';
 import { ParseStatus, ParseUnitEvents } from './constants';
 import { CacheMediator } from './core/cache-mediator';
 import { createPollingPool$ } from './core/polling-pool$';
@@ -10,13 +12,13 @@ import {
   iPollingEvent,
   PollingEvents,
 } from './core/utils/events';
-import { iParseError, iParseOptions } from './types';
+import { ParseUnitService } from './parse-unit.service';
+import { iParseOptions } from './types';
+import { getSocketError } from './utils';
 
 @Injectable()
 export class ParseService implements OnModuleDestroy {
   private socket: Socket;
-
-  private activeParseUnits: iParseUnit[];
 
   private endTime: Date;
 
@@ -28,6 +30,8 @@ export class ParseService implements OnModuleDestroy {
 
   private abortController: AbortController;
 
+  constructor(private parseUnitService: ParseUnitService) {}
+
   onModuleDestroy() {
     this.stop();
   }
@@ -36,18 +40,26 @@ export class ParseService implements OnModuleDestroy {
     this.socket = socket;
   }
 
-  public setConfig(parseUnits: iParseUnit[], endTime: Date) {
-    this.activeParseUnits = parseUnits || this.activeParseUnits;
+  public setConfig(endTime: Date) {
     this.endTime = endTime || this.endTime;
   }
 
-  public start() {
+  public async start(userId: number) {
     if (this.pollingSubscription) return this.cacheMediator.adsStream;
+
+    const selectedParseUnist =
+      await this.parseUnitService.getSelectedParseUnits(Number(userId));
+
+    if (!selectedParseUnist?.length) {
+      throw new WsException(
+        stringifyErrorCode(ERROR_CODES.EMPTY_PARSE_UNIT_LIST),
+      );
+    }
 
     this.abortController = new AbortController();
 
     this.cacheMediator = new CacheMediator();
-    this.pollingPool$ = createPollingPool$(this.activeParseUnits, {
+    this.pollingPool$ = createPollingPool$(selectedParseUnist, {
       endTime: this.endTime,
       signal: this.abortController.signal,
     });
@@ -64,7 +76,6 @@ export class ParseService implements OnModuleDestroy {
   }
 
   public stop() {
-    console.trace('Stop');
     this.abortController?.abort?.();
     this.pollingSubscription?.unsubscribe?.();
     this.pollingSubscription = undefined;
@@ -77,7 +88,6 @@ export class ParseService implements OnModuleDestroy {
   public get parseOptions(): iParseOptions {
     return {
       endTime: this.endTime ?? new Date(),
-      parseUnits: this.activeParseUnits ?? [],
     };
   }
 
@@ -97,6 +107,10 @@ export class ParseService implements OnModuleDestroy {
           case PollingEvents.ERROR: {
             // TODO: log such errors to log file
             console.trace(PollingEvents.ERROR, Date.now());
+            this.socket.emit(
+              ParseUnitEvents.error,
+              getSocketError(event.payload),
+            );
             break;
           }
 
@@ -107,13 +121,7 @@ export class ParseService implements OnModuleDestroy {
       error: (error) => {
         this.stop();
 
-        const errorEvent: iParseError = {
-          code: error?.payload?.code,
-          name: error?.payload?.name || error?.name,
-          message: error?.payload?.message || error?.message,
-        };
-
-        this.socket.emit(ParseUnitEvents.error, errorEvent);
+        this.socket.emit(ParseUnitEvents.error, getSocketError(error));
       },
       complete: () => {
         this.stop();

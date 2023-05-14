@@ -7,7 +7,7 @@ import { ParserService } from './parser.service';
   styleUrls: ['./parser.component.scss'],
 })
 export class ParserComponent implements OnInit, OnDestroy {
-  constructor(private parserService: ParserService) {}
+  constructor(public parserService: ParserService) {}
 
   ngOnInit() {
     this.parserService.connect();

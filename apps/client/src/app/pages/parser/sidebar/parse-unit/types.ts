@@ -5,6 +5,7 @@ export interface iParseUnitFormValues {
   frequency: number; // in ms
   name: string;
   siteUrl: string;
+  selected: boolean;
 }
 
 export type tNgParseUnitFormValues = {

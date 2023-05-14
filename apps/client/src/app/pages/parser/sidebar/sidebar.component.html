@@ -1,21 +1,16 @@
 <div class="content">
-  <div class="parse-units">
+  <div class="parse-units" [class.disabled]="status === 'parsing'">
     <div class="title">
       <h2>Parse unit list</h2>
 
-      <button mat-mini-fab color="primary" (click)="setIsCreateParseUnit(true)">
-        <mat-icon>add</mat-icon>
-      </button>
+
+      <app-parse-unit [parseUnit]="emptyParseUnit"></app-parse-unit>
     </div>
 
-    <ng-container *ngIf="selectableParseUnits | async as parseUnits">
+    <ng-container *ngIf="parserService.parseUnits$ | async as parseUnits">
       <div class="list">
-        <app-parse-unit *ngFor="let parseUnit of parseUnits" [parseUnit]="parseUnit" (onFormClose)="onFormClose()"
-          (deleteParseUnit)="deleteParseUnit($event)" (onToggle)="onToggle($event, parseUnits)">
-        </app-parse-unit>
+        <app-parse-unit *ngFor="let parseUnit of parseUnits" [parseUnit]="parseUnit"></app-parse-unit>
 
-        <app-parse-unit *ngIf="isCreateParseUnit" [parseUnit]="emptyParseUnit" (onFormClose)="onFormClose()"
-          (deleteParseUnit)="deleteParseUnit($event)"></app-parse-unit>
       </div>
 
       <div class="empty-placeholder" *ngIf="!parseUnits?.length">
@@ -32,6 +27,13 @@
   <div class="parser">
     Duration: 30m
 
-
+    <div class='controls'>
+      <button mat-flat-button color="primary" (click)="startParse()" *ngIf="status === 'idle'">
+        Start
+      </button>
+      <button mat-flat-button color="warn" (click)="stopParse()" *ngIf="status === 'parsing'">
+        Stop
+      </button>
+    </div>
   </div>
 </div>

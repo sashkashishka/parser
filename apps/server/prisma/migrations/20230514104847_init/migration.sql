@@ -14,6 +14,7 @@ CREATE TABLE `ParseUnit` (
     `frequency` INTEGER NOT NULL,
     `siteUrl` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `selected` BOOLEAN NOT NULL DEFAULT false,
     `userId` INTEGER NOT NULL,
 
     PRIMARY KEY (`id`)

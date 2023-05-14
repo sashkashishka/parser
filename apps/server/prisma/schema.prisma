@@ -24,6 +24,7 @@ model ParseUnit {
   frequency  Int 
   siteUrl    String
   name       String
+  selected   Boolean  @default(false)
   user       User  @relation(fields: [userId], references: [id])
   userId     Int
 }

@@ -1,5 +1,5 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { iParseUnitSelectable } from '../../types';
+import { Component, Input, OnInit } from '@angular/core';
+import { iParseUnit } from '../../types';
 import { PARSE_UNIT_STATE } from './types';
 import {
   MatBottomSheet,
@@ -7,6 +7,7 @@ import {
 } from '@angular/material/bottom-sheet';
 import { ParseUnitFormComponent } from './form.component';
 import { iBottomSheetConfig } from './types';
+import { ParserService } from '../../parser.service';
 
 @Component({
   selector: 'app-parse-unit',
@@ -15,39 +16,39 @@ import { iBottomSheetConfig } from './types';
 })
 export class ParseUnitComponent implements OnInit {
   @Input()
-  public parseUnit: iParseUnitSelectable;
-
-  @Output()
-  public onToggle = new EventEmitter();
-
-  @Output()
-  public onFormClose = new EventEmitter();
-
-  @Output()
-  public deleteParseUnit = new EventEmitter<number>();
+  public parseUnit: iParseUnit;
 
   public state: PARSE_UNIT_STATE;
 
   private bottomSheetRef?: MatBottomSheetRef<ParseUnitFormComponent>;
 
-  constructor(private bottomSheet: MatBottomSheet) {}
+  constructor(
+    private bottomSheet: MatBottomSheet,
+    private parserService: ParserService,
+  ) {}
 
   ngOnInit(): void {
     switch (true) {
       case this.parseUnit.id === 0: {
-        this.state = PARSE_UNIT_STATE.CREATE;
-        this.openForm();
+        this.setState(PARSE_UNIT_STATE.CREATE);
 
         break;
       }
 
       default:
-        this.state = PARSE_UNIT_STATE.VIEW;
+        this.setState(PARSE_UNIT_STATE.VIEW);
     }
   }
 
   public toggle() {
-    this.onToggle.emit(this.parseUnit.id);
+    return this.parserService.updateParseUnit({
+      ...this.parseUnit,
+      selected: !this.parseUnit.selected,
+    });
+  }
+
+  public delete() {
+    return this.parserService.deleteParseUnit(this.parseUnit.id);
   }
 
   public edit() {
@@ -55,15 +56,11 @@ export class ParseUnitComponent implements OnInit {
     this.openForm();
   }
 
-  public delete() {
-    this.deleteParseUnit.emit(this.parseUnit.id);
-  }
-
   private setState(state: PARSE_UNIT_STATE) {
     this.state = state;
   }
 
-  private openForm() {
+  public openForm() {
     if (this.bottomSheetRef) return;
 
     this.bottomSheetRef = this.bottomSheet.open<
@@ -75,13 +72,6 @@ export class ParseUnitComponent implements OnInit {
         parseUnit: this.parseUnit,
         state: this.state,
       },
-    });
-
-    this.bottomSheetRef.afterDismissed().subscribe(() => {
-
-      this.onFormClose.emit();
-
-      this.bottomSheetRef = undefined;
     });
   }
 }

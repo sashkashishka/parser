@@ -1,74 +1,39 @@
-import { Component, OnInit, AfterViewInit } from '@angular/core';
-import { iParseUnit, iParseUnitSelectable } from '../types';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { Component, Input } from '@angular/core';
+import { iParseUnit } from '../types';
 import { ParserService } from '../parser.service';
+import { PARSE_STATUS } from '../constants';
 
 // TODO: refactor (
 // * logic of isCreateParseUnit
 // * logic of delete
 // * logic of closing form
+// refactor to store (maybe ngrx)
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.scss'],
 })
-export class SidebarComponent implements AfterViewInit {
+export class SidebarComponent {
   public emptyParseUnit: iParseUnit = {
     id: 0,
     name: '',
     frequency: 10000,
     siteUrl: '',
+    selected: false,
   };
 
+  @Input()
+  public status: PARSE_STATUS | null;
+
   constructor(
-    private snackbar: MatSnackBar,
-    private parserService: ParserService,
+    public parserService: ParserService,
   ) {}
 
-  ngAfterViewInit(): void {
-    this.parserService.emitConfig({});
-    this.parserService.parseUnits$.next();
+  public startParse() {
+    this.parserService.emitStart();
   }
 
-  public get selectableParseUnits() {
-    return this.parserService.selectableParseUnits$;
-  }
-
-  public deleteParseUnit(id: number) {
-    return this.parserService.deleteParseUnit(id).subscribe({
-      next: () => {
-        this.parserService.parseUnits$.next();
-      },
-      error: (error) => {
-        this.snackbar.open(error.message, 'Got it', {
-          duration: 4000,
-        });
-      },
-    });
-  }
-
-  public onToggle(id: iParseUnit['id'], parseUnits: iParseUnitSelectable[]) {
-    const parseUnit = parseUnits.find((unit) => unit.id === id);
-    const selectedArr = parseUnits.filter((unit) => unit.selected);
-    const withoutParseUnitArr = selectedArr.filter((unit) => unit.id !== id);
-
-    let result = withoutParseUnitArr;
-
-    if (selectedArr.length === withoutParseUnitArr.length) {
-      result = selectedArr.concat([parseUnit!]);
-    }
-
-    this.parserService.emitConfig({ parseUnits: result });
-  }
-
-  public onFormClose() {
-    this.parserService.parseUnits$.next();
-    this.setIsCreateParseUnit(false);
-  }
-
-  public isCreateParseUnit = false;
-
-  public setIsCreateParseUnit(v: boolean) {
-    this.isCreateParseUnit = v;
+  public stopParse() {
+    this.parserService.emitStop();
   }
 }

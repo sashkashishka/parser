@@ -23,7 +23,7 @@ export class ParseUnitFormComponent implements OnInit {
     frequency: new FormControl<number>(10000, {
       nonNullable: true,
       initialValueIsDefault: true,
-      validators: [Validators.required, Validators.min(5000)],
+      validators: [Validators.required, Validators.min(1000)],
     }),
     name: new FormControl<string>('', {
       nonNullable: true,
@@ -39,6 +39,11 @@ export class ParseUnitFormComponent implements OnInit {
           /^[A-Za-z][A-Za-z\d.+-]*:\/*(?:\w+(?::\w+)?@)?[^\s/]+(?::\d+)?(?:\/[\w#!:.?+=&%@\-/]*)?$/,
         ),
       ],
+    }),
+    selected: new FormControl<boolean>(false, {
+      nonNullable: true,
+      initialValueIsDefault: true,
+      validators: [Validators.required],
     }),
   });
 
@@ -56,6 +61,7 @@ export class ParseUnitFormComponent implements OnInit {
       name: parseUnit.name,
       siteUrl: parseUnit.siteUrl,
       frequency: parseUnit.frequency,
+      selected: parseUnit.selected,
     });
   }
 

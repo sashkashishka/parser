@@ -15,3 +15,7 @@
     </mat-card-actions>
   </mat-card-content>
 </mat-card>
+
+<button mat-mini-fab color="primary" *ngIf="state === 'create'" (click)="openForm()">
+  <mat-icon>add</mat-icon>
+</button>

@@ -1,7 +1,13 @@
-<div class="empty-placeholder" *ngIf="true">
+<div class="empty-placeholder" *ngIf="!results.length">
   <img src="../../../../assets/empty-placeholder.jpeg" alt="" width="220px" height="220px" />
 
   <p>
     No results
   </p>
+</div>
+
+<div class="list">
+  <div class="ad" *ngFor="let ad of results">
+    {{ad | json}}
+  </div>
 </div>

@@ -1,4 +1,4 @@
-import { IsInt, IsString, IsUrl } from 'class-validator';
+import { IsBoolean, IsInt, IsString, IsUrl } from 'class-validator';
 import { iParseUnit } from 'src/types';
 
 export class ParseUnitDto implements iParseUnit {
@@ -13,4 +13,7 @@ export class ParseUnitDto implements iParseUnit {
 
   @IsInt()
   frequency: number;
+
+  @IsBoolean()
+  selected: boolean;
 }

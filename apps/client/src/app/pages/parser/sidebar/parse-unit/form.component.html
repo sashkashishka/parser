@@ -44,6 +44,8 @@
     </mat-error>
   </mat-form-field>
 
+  <mat-checkbox formControlName="selected">Selected</mat-checkbox>
+
   <button type="submit" mat-stroked-button color="primary" [disabled]="submitting || parseUnitForm.invalid">
     <ng-container *ngIf="data.state === 'edit'">
       Update
