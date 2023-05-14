@@ -1,4 +1,4 @@
-<mat-card *ngIf="state !== 'create'" (click)="toggle()">
+<mat-card *ngIf="state !== 'create'" [class.active]="parseUnit.selected" (click)="toggle()">
   <mat-card-content>
     <p>Name: {{parseUnit.name}}</p>
     <p class="site-url-view">SiteUrl: {{parseUnit.siteUrl}}</p>

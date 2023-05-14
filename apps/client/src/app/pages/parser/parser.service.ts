@@ -8,7 +8,6 @@ import {
   combineLatest,
   of,
   switchMap,
-  tap,
 } from 'rxjs';
 import { SocketService } from './socket.service';
 import { SOCKET_EVENTS } from './constants';
@@ -124,7 +123,7 @@ export class ParserService {
   // Emmiters
   // **********************
   // **********************
-  public emitConfig(payload: unknown) {
+  public emitConfig(payload: Partial<iConfigEvent>) {
     this.socketService.socket.emit(
       SOCKET_EVENTS.CONFIG,
       this.authService.createEvent({ payload }),

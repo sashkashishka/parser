@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { iParseUnit } from '../../types';
+import { iParseUnitSelectable } from '../../types';
 import { PARSE_UNIT_STATE } from './types';
 import {
   MatBottomSheet,
@@ -15,7 +15,7 @@ import { iBottomSheetConfig } from './types';
 })
 export class ParseUnitComponent implements OnInit {
   @Input()
-  public parseUnit: iParseUnit;
+  public parseUnit: iParseUnitSelectable;
 
   @Output()
   public onToggle = new EventEmitter();
@@ -46,7 +46,9 @@ export class ParseUnitComponent implements OnInit {
     }
   }
 
-  public toggle() {}
+  public toggle() {
+    this.onToggle.emit(this.parseUnit.id);
+  }
 
   public edit() {
     this.setState(PARSE_UNIT_STATE.EDIT);

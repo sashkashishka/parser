@@ -6,7 +6,7 @@ export interface iParseUnit {
 }
 
 export interface iParseUnitSelectable extends iParseUnit {
-  selected: boolean;
+  selected?: boolean;
 }
 
 export interface iConfigEvent {

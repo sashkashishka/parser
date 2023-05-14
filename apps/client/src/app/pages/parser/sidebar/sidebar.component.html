@@ -11,7 +11,7 @@
     <ng-container *ngIf="selectableParseUnits | async as parseUnits">
       <div class="list">
         <app-parse-unit *ngFor="let parseUnit of parseUnits" [parseUnit]="parseUnit" (onFormClose)="onFormClose()"
-          (deleteParseUnit)="deleteParseUnit($event)" (onToggle)="onToggle($event)">
+          (deleteParseUnit)="deleteParseUnit($event)" (onToggle)="onToggle($event, parseUnits)">
         </app-parse-unit>
 
         <app-parse-unit *ngIf="isCreateParseUnit" [parseUnit]="emptyParseUnit" (onFormClose)="onFormClose()"
@@ -30,7 +30,8 @@
   </div>
 
   <div class="parser">
-    Parser block
+    Duration: 30m
+
 
   </div>
 </div>

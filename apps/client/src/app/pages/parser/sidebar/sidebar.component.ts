@@ -47,8 +47,20 @@ export class SidebarComponent implements AfterViewInit {
     });
   }
 
-  public onToggle(parseUnit: iParseUnit) {
-    // this.parserService.toggleActiveParseUnit(parseUnit);
+  public onToggle(id: iParseUnit['id'], parseUnits: iParseUnitSelectable[]) {
+    const parseUnit = parseUnits.find((unit) => unit.id === id);
+    const selectedArr = parseUnits.filter((unit) => unit.selected);
+    const isSelected = selectedArr.find((unit) => unit.id === id);
+
+    let result = selectedArr;
+
+    if (isSelected) {
+      result = selectedArr.filter((unit) => unit.id !== id);
+    } else {
+      result = selectedArr.concat([parseUnit!]);
+    }
+
+    this.parserService.emitConfig({ parseUnits: result });
   }
 
   public onFormClose() {
