@@ -1,6 +1,6 @@
 import { Controller, HttpCode, HttpStatus, Post, Body, UseGuards } from '@nestjs/common';
 import { CreateUserDto } from './dto/createUser.dto';
-import { IsDev } from './guards/isDev.guard';
+import { Access } from './guards/access.guard';
 import { UsersService } from './users.service';
 
 @Controller('users')
@@ -9,7 +9,7 @@ export class UsersController {
 
   @HttpCode(HttpStatus.OK)
   @Post('create')
-  @UseGuards(IsDev)
+  @UseGuards(Access)
   async createUser(@Body() signInDto: CreateUserDto) {
     return this.authService.createUser(signInDto);
   }
