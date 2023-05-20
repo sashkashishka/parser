@@ -4,7 +4,7 @@
       <form [formGroup]="authForm" class="form" (ngSubmit)="onSubmit()">
         <mat-form-field>
           <mat-label>Name</mat-label>
-          <input matInput placeholder="Enter name" formControlName="username" />
+          <input autocomplete="name" matInput placeholder="Enter name" formControlName="username" />
 
           <mat-error *ngIf="username?.touched && username?.errors?.['required']" align="end">Name is required
           </mat-error>
@@ -12,7 +12,7 @@
 
         <mat-form-field appearance="fill">
           <mat-label>Password</mat-label>
-          <input matInput placeholder="Enter password" formControlName="password" type="password" />
+          <input autocomplete="current-password" matInput placeholder="Enter password" formControlName="password" type="password" />
 
           <mat-error *ngIf="password?.touched && password?.errors?.['required']" align="end">
             Password is required
