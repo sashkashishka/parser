@@ -2,7 +2,6 @@ import { Injectable, OnModuleDestroy } from '@nestjs/common';
 import { WsException } from '@nestjs/websockets';
 import { Observable, Observer, Subscription } from 'rxjs';
 import { Socket } from 'socket.io';
-import { iParseUnit } from 'src/types';
 import { ERROR_CODES, stringifyErrorCode } from 'src/utils/errorCodes';
 import { ParseStatus, ParseUnitEvents } from './constants';
 import { CacheMediator } from './core/cache-mediator';
@@ -14,7 +13,7 @@ import {
 } from './core/utils/events';
 import { ParseUnitService } from './parse-unit.service';
 import { iParseOptions } from './types';
-import { getSocketError } from './utils';
+import { addMinutes, getSocketError } from './utils';
 
 @Injectable()
 export class ParseService implements OnModuleDestroy {
@@ -60,7 +59,7 @@ export class ParseService implements OnModuleDestroy {
 
     this.cacheMediator = new CacheMediator();
     this.pollingPool$ = createPollingPool$(selectedParseUnist, {
-      endTime: this.endTime,
+      endTime: addMinutes(30),
       signal: this.abortController.signal,
     });
 
@@ -105,8 +104,6 @@ export class ParseService implements OnModuleDestroy {
           }
 
           case PollingEvents.ERROR: {
-            // TODO: log such errors to log file
-            console.trace(PollingEvents.ERROR, Date.now());
             this.socket.emit(
               ParseUnitEvents.error,
               getSocketError(event.payload),

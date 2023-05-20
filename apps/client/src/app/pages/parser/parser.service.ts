@@ -16,7 +16,7 @@ import { PARSE_STATUS, SOCKET_EVENTS } from './constants';
 import { AuthService } from 'src/app/services/auth.service';
 import { API } from 'src/app/constants';
 import {
-  iAdsEvent,
+  iAd,
   iCompleteEvent,
   iConfigEvent,
   iErrorEvent,
@@ -39,7 +39,7 @@ export class ParserService {
     this.socketService.connect();
 
     this.status$ = this.createSocketStream<tStatusEvent>(SOCKET_EVENTS.STATUS);
-    this.ads$ = this.createSocketStream<iAdsEvent>(SOCKET_EVENTS.ADS);
+    this.ads$ = this.createSocketStream<iAd>(SOCKET_EVENTS.ADS);
     this.start$ = this.createSocketStream<void>(SOCKET_EVENTS.START);
     this.config$ = this.createSocketStream<iConfigEvent>(SOCKET_EVENTS.CONFIG);
     this.complete$ = this.createSocketStream<iCompleteEvent>(
@@ -120,7 +120,7 @@ export class ParserService {
   // **********************
   public status$: Observable<tStatusEvent>;
 
-  public ads$: Observable<iAdsEvent>;
+  public ads$: Observable<iAd>;
 
   public config$: Observable<iConfigEvent>;
 

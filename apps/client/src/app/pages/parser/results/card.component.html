@@ -1,6 +1,21 @@
 <mat-card [class.notViewed]="!isViewed" (click)="onClick()">
   <mat-card-content>
-    {{isViewed | json}}
-    <p>Name: {{ad.id}}</p>
+    <div class="header">
+      <p>Id: {{ad.id}}</p>
+
+      <div>
+        <div class="time">{{ad.last_refresh_time | date:'medium'}}</div>
+        <div>{{ad.location.city.name}}</div>
+      </div>
+    </div>
+
+    <a href={{ad.url}} target="_blank">{{ad.title}}</a>
+
+    <div class="grid">
+      <div class="cell" *ngFor="let param of ad.params">
+        <p>{{param.name}}</p>
+        <p>{{param.value.label}}</p>
+      </div>
+    </div>
   </mat-card-content>
 </mat-card>

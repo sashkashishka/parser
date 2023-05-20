@@ -8,9 +8,9 @@ import {
   takeWhile,
 } from 'rxjs';
 import { iParseUnit } from 'src/types';
-import { iAd } from 'src/types/ad';
 import { ERROR_CODES, stringifyErrorCode } from 'src/utils/errorCodes';
-import { ParseFetchError, MaxConsecutiveError } from '../utils/errors';
+import { Parser } from '../parser';
+import { MaxConsecutiveError } from '../utils/errors';
 import {
   AdPollingEvent,
   ErrorPollingEvent,
@@ -31,11 +31,11 @@ export function createPolling$(
 ): Observable<iPollingEvent> {
   const { frequency } = parseUnit;
 
-  let c = 0;
-  let counter = 0;
   let consecutiveErrorCount = 1;
 
-  return of([]).pipe(
+  const parser = new Parser({ parseUnit, signal });
+
+  return parser.parse().pipe(
     catchError((err) => {
       consecutiveErrorCount += 1;
 
@@ -48,33 +48,17 @@ export function createPolling$(
         );
       }
 
-      return of(
-        new ErrorPollingEvent(
-          new ParseFetchError(
-            err.message,
-            stringifyErrorCode(ERROR_CODES.PARSE_FETCH_ERROR),
-          ),
-        ),
-      );
+      return of(new ErrorPollingEvent(err));
     }),
     map((data) => {
       if (data instanceof ErrorPollingEvent) return data;
 
       consecutiveErrorCount = 0;
 
-      // TODO: in some way be notified about different data
-      // or move it to parser
-      const payload = !Array.isArray(data) ? data : [{ id: counter++ }];
-
-      return new AdPollingEvent(payload);
+      return new AdPollingEvent(data);
     }),
     delay(frequency || DEFAULT_FREQUENCY),
     repeat(),
-    // takeWhile(() => endTime.getTime() >= Date.now()),
-    takeWhile(() => {
-
-      c++;
-      return c <= 7;
-    }),
+    takeWhile(() => endTime.getTime() >= Date.now()),
   );
 }

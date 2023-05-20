@@ -1,3 +1,33 @@
 .notViewed {
   background-color: #E1F5FE;
 }
+
+.header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.time {
+  flex-shrink: 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(288px, 1fr));
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.cell {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 8px;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border: 1px solid black;
+}
+
+.cell p {
+  margin: 0;
+}

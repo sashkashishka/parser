@@ -1,4 +1,4 @@
-class CustomError extends Error {
+export class CustomError extends Error {
   public code: string;
 
   constructor(message: string, code: string) {
@@ -10,4 +10,12 @@ class CustomError extends Error {
 
 export class MaxConsecutiveError extends CustomError {}
 
-export class ParseFetchError extends CustomError {}
+// get category id
+export class NoAdListParamsError extends CustomError {}
+
+export class GetAdListParamsError extends CustomError {}
+
+// get ad list
+export class NoAdListError extends CustomError {}
+
+export class GetAdListError extends CustomError {}
