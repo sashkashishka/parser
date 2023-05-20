@@ -24,6 +24,11 @@ export class AppController {
     return {
       pong: new Date(),
       auth: true,
-    }
+    };
+  }
+
+  @Get('healthcheck')
+  healthcheck() {
+    return { health: 'good' };
   }
 }
