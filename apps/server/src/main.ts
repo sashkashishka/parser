@@ -15,6 +15,7 @@ async function bootstrap() {
     },
   );
   app.useGlobalPipes(new ValidationPipe());
+  app.setGlobalPrefix('api');
   await app.listen(8000, '0.0.0.0');
 }
 bootstrap();

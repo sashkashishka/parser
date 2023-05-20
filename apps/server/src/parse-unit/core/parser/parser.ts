@@ -68,8 +68,6 @@ export class Parser {
   }
 
   private getAdListQueryParams() {
-    console.log(this.adListQueryParams);
-
     if (this.adListQueryParams) return of(this.adListQueryParams);
 
     return createFetch$<iGetCategoryId>(this.adListQueryParamsUrl, {
