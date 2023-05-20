@@ -10,7 +10,9 @@ services:
     expose:
       - 8000
     volumes:
-      - .:/usr/app
+      - type: bind
+        source: .
+        target: /usr/app
     env_file:
       - ".env"
     networks:
