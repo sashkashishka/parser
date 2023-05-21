@@ -16,6 +16,12 @@ job "database" {
       }
     }
 
+    service {
+      name     = "db"
+      provider = "nomad"
+      port     = "db"
+    }
+
     task "db" {
       driver = "docker"
 

@@ -19,8 +19,31 @@ app "db" {
     }
     hook {
       when = "after"
-      command = ["pnpm", "prisma", "migrate", "deploy"]
+      # command = ["pnpm", "prisma", "migrate", "deploy"]
+      command = ["echo", "success"]
       on_failure = "fail"
+    }
+  }
+}
+
+app "nestjs" {
+  build {
+    use "docker-pull" {
+      image = "nginx"
+      tag = "1.23.4"
+    }
+  }
+
+  deploy {
+    use "nomad-jobspec" {
+      jobspec = templatefile("${path.app}/nomad/nestjs.nomad.tpl", {
+        prisma_database = "${var.prisma_database}",
+        prisma_user = "${var.prisma_user}",
+        prisma_password = "${var.prisma_password}",
+        jwt_secret = "${var.jwt_secret}",
+        hash_salt = "${var.hash_salt}",
+        node_env = "${var.node_env}",
+      })
     }
   }
 }
@@ -43,4 +66,19 @@ variable "prisma_user" {
 variable "prisma_password" {
   description = "mysql user password"
   type        = string
+}
+
+variable "hash_salt" {
+  description = "hash salt for pass generation"
+  type        = string
+}
+
+variable "jwt_secret" {
+  description = "jwt secret key"
+  type        = string
+}
+variable "node_env" {
+  description = "node js env"
+  type        = string
+  default = "production"
 }
