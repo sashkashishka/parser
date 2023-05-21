@@ -37,3 +37,6 @@ lerna-debug.log*
 !.vscode/extensions.json
 
 .env
+nomad/datadir
+nomad/host-volumes
+nomad-client.hcl

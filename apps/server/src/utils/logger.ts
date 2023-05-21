@@ -11,9 +11,8 @@ export const parserLogger = createLogger({
   level: 'info',
   format: combine(label({ label: 'parser' }), timestamp(), formatter),
   transports: [
-    // new transports.Console(),
     new transports.File({
-      filename: './logs/parser.log',
+      filename: './host-content/logs/parser.log',
     }),
   ],
 });

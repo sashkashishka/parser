@@ -1,0 +1,104 @@
+name: Deploy
+
+on:
+  pull_request:
+    branches:
+      - main
+
+env:
+  DATABASE_URL: mysql
+
+jobs:
+  build-and-push-image:
+    name: Build image
+    runs-on: ubuntu-latest
+   
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3 
+      with:
+        fetch-depth: 2
+
+    - name: Setup Node.js v18.12.1
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.12.1'
+        cache: 'pnpm'
+
+    - name: Install client dependencies
+      working-directory: ./app/client
+      run: pnpm i
+
+    - name: Build client
+      working-directory: ./app/client
+      run: pnpm build
+
+    - name: Install server dependencies
+      working-directory: ./app/server
+      run: pnpm i
+
+    - name: Build server
+      working-directory: ./app/server
+      run: pnpm build
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_TOKEN }}
+
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action
+      with:
+        images: sashkashishka/parser
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: sashkashishka/parser:latest
+
+  deploy:
+    name: Apply migrations
+    runs-on: ubuntu-latest
+   
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3 
+      with:
+        fetch-depth: 2
+
+    - name: Setup Node.js v18.12.1
+      uses: actions/setup-node@v2
+      with:
+        node-version: '18.12.1'
+        cache: 'pnpm'
+
+    - name: Install server dependencies
+      working-directory: ./app/server
+      run: pnpm i
+
+    - name: Deploy db
+      working-directory: ./app/server
+      run: echo 'deploy db'
+      env:
+        NOMAD_ADDR: 123
+        NOMAD_TOKEN: 321
+        MYSQL_ROOT_PASSWORD: 1234
+        PRISMA_DATABASE: 1234
+        PRISMA_USER: user
+        PRISMA_PASSWORD: user
+
+    - name: Deploy migrate
+      working-directory: ./app/server
+      run: pnpm prisma migrate deploy
+
+    - name: Deploy nestjs
+      working-directory: ./app/server
+      run: echo 'deploy nestjs'
+      env:
+        NOMAD_ADDR: 123
+        NOMAD_TOKEN: 321

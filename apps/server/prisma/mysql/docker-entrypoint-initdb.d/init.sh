@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# TODO: provide host to user
 echo "** Creating default DB and users"
 
 mysql -u root -p${MYSQL_ROOT_PASSWORD} --execute "CREATE DATABASE IF NOT EXISTS $PRISMA_DATABASE;"
