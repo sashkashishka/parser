@@ -75,7 +75,7 @@ jobs:
     #     -var node_env=production \
     #     -app=db
 
-    - name: Start app
+    - name: Start nestjs
       run: |
         waypoint up \
         -var prisma_database=${{ secrets.PRISMA_DATABASE}} \
@@ -86,4 +86,4 @@ jobs:
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
         -var node_env=production \
-        -app=app
+        -app=nestjs
