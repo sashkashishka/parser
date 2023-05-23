@@ -61,7 +61,8 @@ jobs:
       with:
         version: '0.11.1'
 
-    - run: |
+    - name: Context create
+      run: |
         waypoint context create \
         -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
         -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
@@ -81,6 +82,7 @@ jobs:
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
         -var node_env=production \
+        -local=false \
         -app=db
 
     - name: Start nestjs
@@ -94,4 +96,5 @@ jobs:
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
         -var node_env=production \
+        -local=false \
         -app=nestjs
