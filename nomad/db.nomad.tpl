@@ -57,7 +57,7 @@ job "database" {
       }
 
       env {
-        MYSQL_ROOT_PASSWORD = ${mysql_root_password}
+        MYSQL_ROOT_PASSWORD = "${mysql_root_password}"
       }
     }
   }
