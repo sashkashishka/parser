@@ -6,11 +6,15 @@ on:
       - main
 
 env:
-  DATABASE_URL: mysql
+  DATABASE_URL: mysql://${{ secrets.PRISMA_USER }}:${{ secrets.PRISMA_PASSWORD }}@${{ secrets.DB_ADDR }}/${{ secrets.PRISMA_DATABASE }}
+  WAYPOINT_SERVER_TOKEN: ${{ secrets.WAYPOINT_SERVER_TOKEN }}
+  WAYPOINT_SERVER_ADDR: ${{ secrets.WAYPOINT_SERVER_ADDR }}
+  WAYPOINT_SERVER_TLS: 1
+  WAYPOINT_SERVER_TLS_SKIP_VERIFY: 1
 
 jobs:
-  build-and-push-image:
-    name: Build image
+  build-deploy:
+    name: Build and deploy
     runs-on: ubuntu-latest
    
     steps:
@@ -47,58 +51,35 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Extract metadata (tags, labels) for Docker
-      id: meta
-      uses: docker/metadata-action
+    - name: Install waypoint
+      uses: hashicorp/action-setup-waypoint
       with:
-        images: sashkashishka/parser
+        version: '0.1.0'
 
-    - name: Build and push Docker image
-      uses: docker/build-push-action
-      with:
-        context: .
-        file: ./Dockerfile
-        push: true
-        tags: sashkashishka/parser:latest
+    - run: waypoint init
 
-  deploy:
-    name: Apply migrations
-    runs-on: ubuntu-latest
-   
-    steps:
-    - name: Checkout repository
-      uses: actions/checkout@v3 
-      with:
-        fetch-depth: 2
+    - name: Start db
+      run: |
+        waypoint up \
+        -var prisma_database=${{ secrets.PRISMA_DATABASE}} \
+        -var prisma_user=${{ secrets.PRISMA_USER }} \
+        -var prisma_password=${{ secrets.PRISMA_PASSWORD}} \
+        -var mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+        -var docker_username=${{ secrets.DOCKER_USERNAME }} \
+        -var jwt_secret=${{ secrets.JWT_SECRET }} \
+        -var hash_salt=${{ secrets.HASH_SALT }} \
+        -var node_env=production \
+        -app=db
 
-    - name: Setup Node.js v18.12.1
-      uses: actions/setup-node@v2
-      with:
-        node-version: '18.12.1'
-        cache: 'pnpm'
-
-    - name: Install server dependencies
-      working-directory: ./app/server
-      run: pnpm i
-
-    - name: Deploy db
-      working-directory: ./app/server
-      run: echo 'deploy db'
-      env:
-        NOMAD_ADDR: 123
-        NOMAD_TOKEN: 321
-        MYSQL_ROOT_PASSWORD: 1234
-        PRISMA_DATABASE: 1234
-        PRISMA_USER: user
-        PRISMA_PASSWORD: user
-
-    - name: Deploy migrate
-      working-directory: ./app/server
-      run: pnpm prisma migrate deploy
-
-    - name: Deploy nestjs
-      working-directory: ./app/server
-      run: echo 'deploy nestjs'
-      env:
-        NOMAD_ADDR: 123
-        NOMAD_TOKEN: 321
+    - name: Start app
+      run: |
+        waypoint up \
+        -var prisma_database=${{ secrets.PRISMA_DATABASE}} \
+        -var prisma_user=${{ secrets.PRISMA_USER }} \
+        -var prisma_password=${{ secrets.PRISMA_PASSWORD}} \
+        -var mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }} \
+        -var docker_username=sashkashishka \
+        -var jwt_secret=${{ secrets.JWT_SECRET }} \
+        -var hash_salt=${{ secrets.HASH_SALT }} \
+        -var node_env=production \
+        -app=app

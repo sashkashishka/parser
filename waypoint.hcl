@@ -19,8 +19,7 @@ app "db" {
     }
     hook {
       when = "after"
-      # command = ["pnpm", "prisma", "migrate", "deploy"]
-      command = ["echo", "success"]
+      command = ["pnpm", "prisma", "migrate", "deploy"]
       on_failure = "fail"
     }
   }
@@ -28,9 +27,16 @@ app "db" {
 
 app "nestjs" {
   build {
-    use "docker-pull" {
-      image = "nginx"
-      tag = "1.23.4"
+    use "docker" {
+      context = "."
+      dockerfile = "${path.app}/Dockerfile"
+    }
+
+    registry {
+      use "docker" {
+        image = "${var.docker_username}/parser"
+        tag   = "latest"
+      }
     }
   }
 
@@ -43,6 +49,7 @@ app "nestjs" {
         jwt_secret = "${var.jwt_secret}",
         hash_salt = "${var.hash_salt}",
         node_env = "${var.node_env}",
+        docker_username = "${var.docker_username}",
       })
     }
   }
@@ -77,8 +84,14 @@ variable "jwt_secret" {
   description = "jwt secret key"
   type        = string
 }
+
 variable "node_env" {
   description = "node js env"
   type        = string
   default = "production"
+}
+
+variable "docker_username" {
+  description = "docker registry username"
+  type        = string
 }

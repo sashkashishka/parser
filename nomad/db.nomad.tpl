@@ -13,6 +13,7 @@ job "database" {
       mode = "host"
       port "db" {
         to = 3306
+        static = 3306
       }
     }
 

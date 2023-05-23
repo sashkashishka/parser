@@ -39,4 +39,6 @@ lerna-debug.log*
 .env
 nomad/datadir
 nomad/host-volumes
-nomad-client.hcl
+data.db
+waypoint-server-snapshot-*
+*.db.lock

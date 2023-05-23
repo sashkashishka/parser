@@ -20,6 +20,14 @@ job "nestjs" {
       name     = "nestjs"
       provider = "nomad"
       port     = "nestjs"
+      check {
+        name = "nestjs_check"
+        type = "http"
+        method = "get"
+        path = "/api/healthcheck"
+        timeout = "30s"
+        interval = "5s"
+      }
     }
 
     task "nestjs" {
@@ -32,7 +40,7 @@ job "nestjs" {
       }
 
       config {
-        image = "nginx"
+        image = "${docker_username}/parser"
         ports =  ["nestjs"]
       }
 
