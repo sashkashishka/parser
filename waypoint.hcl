@@ -19,7 +19,8 @@ app "db" {
     }
     hook {
       when = "after"
-      command = ["pnpm", "prisma", "migrate", "deploy"]
+      command = ["echo", "migrate"]
+      # command = ["pnpm", "prisma", "migrate", "deploy"]
       on_failure = "fail"
     }
   }
@@ -33,7 +34,7 @@ app "nestjs" {
     }
 
     registry {
-      use "docker" {
+      use "docker-pull" {
         image = "${var.docker_username}/parser"
         tag   = "latest"
       }
