@@ -7,14 +7,9 @@ on:
 
 env:
   DATABASE_URL: mysql://${{ secrets.PRISMA_USER }}:${{ secrets.PRISMA_PASSWORD }}@${{ secrets.DB_ADDR }}/${{ secrets.PRISMA_DATABASE }}
-  NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
-  WAYPOINT_SERVER_TOKEN: ${{ secrets.WAYPOINT_SERVER_TOKEN }}
-  WAYPOINT_SERVER_ADDR: ${{ secrets.WAYPOINT_SERVER_ADDR }}
-  WAYPOINT_SERVER_TLS: 1
-  WAYPOINT_SERVER_TLS_SKIP_VERIFY: 1
 
 jobs:
-  build-deploy:
+  build-and-deploy:
     name: Build and deploy
     runs-on: ubuntu-latest
    
@@ -22,33 +17,33 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v3 
 
-    # - uses: pnpm/action-setup@v2
-    #   name: Install pnpm
-    #   id: pnpm-install
-    #   with:
-    #     version: 8.3.1
-    #     run_install: false
+    - uses: pnpm/action-setup@v2
+      name: Install pnpm
+      id: pnpm-install
+      with:
+        version: 8.3.1
+        run_install: false
 
-    # - name: Setup Node.js v18.12.1
-    #   uses: actions/setup-node@v3
-    #   with:
-    #     node-version: '18.12.1'
+    - name: Setup Node.js v18.12.1
+      uses: actions/setup-node@v3
+      with:
+        node-version: '18.12.1'
 
-    # - name: Install client dependencies
-    #   working-directory: apps/client
-    #   run: pnpm i
+    - name: Install client dependencies
+      working-directory: apps/client
+      run: pnpm i
 
-    # - name: Build client
-    #   working-directory: apps/client
-    #   run: pnpm build
+    - name: Build client
+      working-directory: apps/client
+      run: pnpm build
 
-    # - name: Install server dependencies
-    #   working-directory: apps/server
-    #   run: pnpm i
+    - name: Install server dependencies
+      working-directory: apps/server
+      run: pnpm i
 
-    # - name: Build server
-    #   working-directory: apps/server
-    #   run: pnpm build
+    - name: Build server
+      working-directory: apps/server
+      run: pnpm build
 
     - name: Log in to Docker Hub
       uses: docker/login-action@v2
@@ -56,24 +51,32 @@ jobs:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_TOKEN }}
 
-    - name: Install waypoint
-      uses: MarcMeszaros/action-setup-waypoint@releases-api
+    - name: Extract metadata (tags, labels) for Docker
+      id: meta
+      uses: docker/metadata-action
       with:
-        version: '0.11.1'
+        images: sashkashishka/parser
 
-    - name: Context create
+    - name: Build and push Docker image
+      uses: docker/build-push-action
+      with:
+        context: .
+        file: ./Dockerfile
+        push: true
+        tags: sashkashishka/parser:latest
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v1
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Format
+      run: terraform fmt -check
+
+    - name: Terraform Apply
       run: |
-        waypoint context create \
-        -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
-        -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
-        -server-require-auth=true \
-        -set-default waypoint-ui
-
-    - run: waypoint init 
-
-    - name: Start db
-      run: |
-        waypoint deploy \
+        terraform apply -auto-approve -input=false \
         -var prisma_database=${{ secrets.PRISMA_DATABASE}} \
         -var prisma_user=${{ secrets.PRISMA_USER }} \
         -var prisma_password=${{ secrets.PRISMA_PASSWORD}} \
@@ -81,20 +84,8 @@ jobs:
         -var docker_username=${{ secrets.DOCKER_USERNAME }} \
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
-        -var node_env=production \
-        -local=false \
-        -app=db
+        -var node_env=production
 
-    - name: Start nestjs
-      run: |
-        waypoint deploy \
-        -var prisma_database=${{ secrets.PRISMA_DATABASE}} \
-        -var prisma_user=${{ secrets.PRISMA_USER }} \
-        -var prisma_password=${{ secrets.PRISMA_PASSWORD}} \
-        -var mysql_root_password=${{ secrets.MYSQL_ROOT_PASSWORD }} \
-        -var docker_username=sashkashishka \
-        -var jwt_secret=${{ secrets.JWT_SECRET }} \
-        -var hash_salt=${{ secrets.HASH_SALT }} \
-        -var node_env=production \
-        -local=false \
-        -app=nestjs
+    - name: Migration
+      working-directory: apps/server
+      run: pnpm prisma migrate deploy
