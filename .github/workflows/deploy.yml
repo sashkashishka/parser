@@ -58,7 +58,7 @@ jobs:
     - name: Install waypoint
       uses: hashicorp/action-setup-waypoint@main
       with:
-        version: '0.1.0'
+        version: '0.11.1'
 
     - run: waypoint init
 
