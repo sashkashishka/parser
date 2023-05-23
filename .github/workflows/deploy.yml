@@ -36,19 +36,19 @@ jobs:
         node-version: '18.12.1'
 
     - name: Install client dependencies
-      working-directory: ./app/client
+      working-directory: app/client
       run: pnpm i
 
     - name: Build client
-      working-directory: ./app/client
+      working-directory: app/client
       run: pnpm build
 
     - name: Install server dependencies
-      working-directory: ./app/server
+      working-directory: app/server
       run: pnpm i
 
     - name: Build server
-      working-directory: ./app/server
+      working-directory: app/server
       run: pnpm build
 
     - name: Log in to Docker Hub
