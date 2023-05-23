@@ -8,7 +8,7 @@ terraform {
 }
 
 provider "nomad" {
-  address = var.nomad_addr
+  address   = var.nomad_addr
   secret_id = var.nomad_token
 }
 
@@ -17,9 +17,9 @@ resource "nomad_job" "db" {
     "${path.module}/nomad/db.nomad.tpl",
     {
       mysql_root_password = var.mysql_root_password,
-      prisma_database = var.prisma_database,
-      prisma_user = var.prisma_user,
-      prisma_password = var.prisma_password,
+      prisma_database     = var.prisma_database,
+      prisma_user         = var.prisma_user,
+      prisma_password     = var.prisma_password,
     }
   )
 }
@@ -29,11 +29,11 @@ resource "nomad_job" "nestjs" {
     "${path.module}/nomad/nestjs.nomad.tpl",
     {
       prisma_database = var.prisma_database,
-      prisma_user = var.prisma_user,
+      prisma_user     = var.prisma_user,
       prisma_password = var.prisma_password,
-      jwt_secret = var.jwt_secret,
-      hash_salt = var.hash_salt,
-      node_env = var.node_env,
+      jwt_secret      = var.jwt_secret,
+      hash_salt       = var.hash_salt,
+      node_env        = var.node_env,
       docker_username = var.docker_username,
     }
   )
@@ -85,7 +85,7 @@ variable "jwt_secret" {
 variable "node_env" {
   description = "node js env"
   type        = string
-  default = "production"
+  default     = "production"
 }
 
 variable "docker_username" {
