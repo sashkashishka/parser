@@ -52,7 +52,7 @@ jobs:
         password: ${{ secrets.DOCKER_TOKEN }}
 
     - name: Install waypoint
-      uses: hashicorp/action-setup-waypoint@v1
+      uses: hashicorp/action-setup-waypoint@main
       with:
         version: '0.1.0'
 
