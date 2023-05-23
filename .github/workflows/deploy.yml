@@ -7,6 +7,7 @@ on:
 
 env:
   DATABASE_URL: mysql://${{ secrets.PRISMA_USER }}:${{ secrets.PRISMA_PASSWORD }}@${{ secrets.DB_ADDR }}/${{ secrets.PRISMA_DATABASE }}
+  NOMAD_ADDR: ${{ secrets.NOMAD_ADDR }}
   WAYPOINT_SERVER_TOKEN: ${{ secrets.WAYPOINT_SERVER_TOKEN }}
   WAYPOINT_SERVER_ADDR: ${{ secrets.WAYPOINT_SERVER_ADDR }}
   WAYPOINT_SERVER_TLS: 1
