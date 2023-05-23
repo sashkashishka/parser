@@ -61,12 +61,12 @@ jobs:
       with:
         version: '0.11.1'
 
-    - run: |
-        waypoint context create \
-        -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
-        -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
-        -server-require-auth=true \
-        -set-default waypoint-ui
+    # - run: |
+    #     waypoint context create \
+    #     -server-addr=${{ secrets.WAYPOINT_SERVER_ADDR }} \
+    #     -server-auth-token=${{ secrets.WAYPOINT_SERVER_TOKEN }} \
+    #     -server-require-auth=true \
+    #     -set-default waypoint-ui
 
     - run: waypoint init 
 
