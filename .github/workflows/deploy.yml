@@ -36,8 +36,8 @@ jobs:
         node-version: '18.12.1'
 
     - name: Install client dependencies
-      working-directory: app/client
-      run: pnpm i
+      # working-directory: app/client
+      run: cd app/client && pnpm i
 
     - name: Build client
       working-directory: app/client
