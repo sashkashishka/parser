@@ -48,9 +48,9 @@ job "database" {
 
        template {
         data = <<EOH
-          CREATE DATABASE IF NOT EXISTS $${PRISMA_DATABASE};
-          CREATE USER IF NOT EXISTS '$${PRISMA_USER}'@'%' IDENTIFIED BY '$${PRISMA_PASSWORD}';
-          GRANT ALTER,CREATE,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE,TRIGGER,ALTER ROUTINE, CREATE ROUTINE, EXECUTE, CREATE TEMPORARY TABLES ON $${PRISMA_DATABASE}.* TO '$${PRISMA_USER}'@'%';
+          CREATE DATABASE IF NOT EXISTS ${prisma_database};
+          CREATE USER IF NOT EXISTS '${prisma_user}'@'%' IDENTIFIED BY '${prisma_password}';
+          GRANT ALTER,CREATE,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE,TRIGGER,ALTER ROUTINE, CREATE ROUTINE, EXECUTE, CREATE TEMPORARY TABLES ON ${prisma_database}.* TO '${prisma_user}'@'%';
         EOH
 
         destination = "$${NOMAD_TASK_DIR}/init.sql"
@@ -58,9 +58,6 @@ job "database" {
 
       env {
         MYSQL_ROOT_PASSWORD = ${mysql_root_password}
-        PRISMA_DATABASE = ${prisma_database}
-        PRISMA_USER = ${prisma_user}
-        PRISMA_PASSWORD = ${prisma_password}
       }
     }
   }
