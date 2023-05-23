@@ -34,7 +34,6 @@ jobs:
       uses: actions/setup-node@v3
       with:
         node-version: '18.12.1'
-        cache: 'pnpm'
 
     - name: Install client dependencies
       working-directory: ./app/client
