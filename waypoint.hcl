@@ -26,35 +26,35 @@ app "db" {
   }
 }
 
-app "nestjs" {
-  build {
-    use "docker" {
-      context = "."
-      dockerfile = "${path.app}/Dockerfile"
-    }
+# app "nestjs" {
+#   build {
+#     use "docker" {
+#       context = "."
+#       dockerfile = "${path.app}/Dockerfile"
+#     }
 
-    registry {
-      use "docker-pull" {
-        image = "${var.docker_username}/parser"
-        tag   = "latest"
-      }
-    }
-  }
+#     registry {
+#       use "docker-pull" {
+#         image = "${var.docker_username}/parser"
+#         tag   = "latest"
+#       }
+#     }
+#   }
 
-  deploy {
-    use "nomad-jobspec" {
-      jobspec = templatefile("${path.app}/nomad/nestjs.nomad.tpl", {
-        prisma_database = "${var.prisma_database}",
-        prisma_user = "${var.prisma_user}",
-        prisma_password = "${var.prisma_password}",
-        jwt_secret = "${var.jwt_secret}",
-        hash_salt = "${var.hash_salt}",
-        node_env = "${var.node_env}",
-        docker_username = "${var.docker_username}",
-      })
-    }
-  }
-}
+#   deploy {
+#     use "nomad-jobspec" {
+#       jobspec = templatefile("${path.app}/nomad/nestjs.nomad.tpl", {
+#         prisma_database = "${var.prisma_database}",
+#         prisma_user = "${var.prisma_user}",
+#         prisma_password = "${var.prisma_password}",
+#         jwt_secret = "${var.jwt_secret}",
+#         hash_salt = "${var.hash_salt}",
+#         node_env = "${var.node_env}",
+#         docker_username = "${var.docker_username}",
+#       })
+#     }
+#   }
+# }
 
 variable "mysql_root_password" {
   description = "Mysql root password"
