@@ -56,7 +56,7 @@ jobs:
     #     password: ${{ secrets.DOCKER_TOKEN }}
 
     - name: Install waypoint
-      uses: pultdev/action-setup-waypoint@main
+      uses: MarcMeszaros/action-setup-waypoint@releases-api
       with:
         version: '0.11.1'
 
