@@ -84,6 +84,8 @@ jobs:
         -var docker_username=${{ secrets.DOCKER_USERNAME }} \
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
+        -var nomad_token=${{ secrets.NOMAD_TOKEN }} \
+        -var nomad_addr=${{ secrets.NOMAD_ADDR }} \
         -var node_env=production
 
     - name: Migration
