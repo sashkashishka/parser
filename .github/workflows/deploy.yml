@@ -5,8 +5,8 @@ on:
     branches:
       - main
 
-env:
-  DATABASE_URL: mysql://${{ secrets.PRISMA_USER }}:${{ secrets.PRISMA_PASSWORD }}@${{ secrets.DB_ADDR }}/${{ secrets.PRISMA_DATABASE }}
+# env:
+#   DATABASE_URL: mysql://${{ secrets.PRISMA_USER }}:${{ secrets.PRISMA_PASSWORD }}@${{ secrets.DB_ADDR }}/${{ secrets.PRISMA_DATABASE }}
 
 jobs:
   build-and-deploy:
@@ -88,6 +88,6 @@ jobs:
         -var nomad_addr=${{ secrets.NOMAD_ADDR }} \
         -var node_env=production
 
-    - name: Migration
-      working-directory: apps/server
-      run: pnpm prisma migrate deploy
+    # - name: Migration
+    #   working-directory: apps/server
+    #   run: pnpm prisma migrate deploy
