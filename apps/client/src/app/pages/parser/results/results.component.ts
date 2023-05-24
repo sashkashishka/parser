@@ -19,7 +19,23 @@ export class ResultsComponent implements OnInit {
     private ls: LocalStorageService,
   ) {}
 
-  public results: iAd[] = [];
+  public get results(): iAd[] {
+    const filtered = this.rawResults.reduce<Record<iAd['id'], iAd>>((acc, curr) => {
+      acc[curr.id] = curr;
+
+      return acc;
+    }, {});
+
+
+    return Object.values(filtered).sort((a, b) => {
+      const aDate = new Date(a.last_refresh_time);
+      const bDate = new Date(b.last_refresh_time);
+
+      return bDate.getTime() - aDate.getTime();
+    });
+  }
+
+  private rawResults: iAd[] = [];
 
   public notViewedList = new Map<number, boolean>();
 
@@ -29,13 +45,13 @@ export class ResultsComponent implements OnInit {
   }
 
   private hydrate() {
-    this.results = this.ls.getData(this.RESULTS_KEY) ?? [];
+    this.rawResults = this.ls.getData(this.RESULTS_KEY) ?? [];
   }
 
   private get observer(): Observer<iAd> {
     return {
       next: (data) => {
-        this.results.push(data);
+        this.rawResults.push(data);
         this.notViewedList.set(data.id, false);
 
         this.saveLastNAds();
@@ -46,9 +62,9 @@ export class ResultsComponent implements OnInit {
   }
 
   private saveLastNAds() {
-    if (!Array.isArray(this.results)) return;
+    if (!Array.isArray(this.rawResults)) return;
 
-    this.ls.saveData(this.RESULTS_KEY, this.results.slice(-this.SAVE_QTY));
+    this.ls.saveData(this.RESULTS_KEY, this.rawResults.slice(-this.SAVE_QTY));
   }
 
   public markViewed(id: number) {
