@@ -13,6 +13,7 @@ job "nestjs" {
       mode = "host"
       port "nestjs" {
         to = 8000
+        static = 8000
       }
     }
 
