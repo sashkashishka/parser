@@ -21,4 +21,4 @@ COPY ./apps/server/prisma ./prisma
 COPY ./apps/client/dist/client ./static
 COPY ./apps/server/dist .
 
-CMD ["pnpm", "prisma", "migrate", "deploy", "&&", "node", "main.js"]
+CMD ["pnpm", "prisma", "migrate", "deploy", "&&", "pnpm", "prisma", "generate", "&&", "node", "main.js"]

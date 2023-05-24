@@ -49,7 +49,7 @@ job "database" {
         data = <<EOH
           CREATE DATABASE IF NOT EXISTS ${prisma_database};
           CREATE USER IF NOT EXISTS '${prisma_user}'@'%' IDENTIFIED BY '${prisma_password}';
-          GRANT ALTER,CREATE,DELETE,DROP,INDEX,INSERT,SELECT,UPDATE,TRIGGER,ALTER ROUTINE, CREATE ROUTINE, EXECUTE, CREATE TEMPORARY TABLES ON ${prisma_database}.* TO '${prisma_user}'@'%';
+          GRANT ALTER,CREATE,DELETE,DROP,INDEX,INSERT, REFERENCES, SELECT,UPDATE,TRIGGER,ALTER ROUTINE, CREATE ROUTINE, EXECUTE, CREATE TEMPORARY TABLES ON ${prisma_database}.* TO '${prisma_user}'@'%';
         EOH
 
         destination = "$${NOMAD_TASK_DIR}/init.sql"
