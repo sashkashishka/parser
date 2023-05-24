@@ -24,4 +24,4 @@ RUN pnpm prisma generate
 COPY ./apps/client/dist/client ./static
 COPY ./apps/server/dist .
 
-CMD ["node", "main.js"]
+CMD ["pnpm", "prisma", "migrate", "deploy", "&&", "node", "main.js"]
