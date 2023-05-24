@@ -18,9 +18,6 @@ COPY ./apps/server/pnpm-lock.yaml .
 RUN pnpm i --frozen-lockfile --prod
 
 COPY ./apps/server/prisma ./prisma
-
-RUN pnpm prisma generate
-
 COPY ./apps/client/dist/client ./static
 COPY ./apps/server/dist .
 
