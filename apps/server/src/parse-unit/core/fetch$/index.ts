@@ -2,9 +2,9 @@ import { Observable } from 'rxjs';
 import { parserLogger } from 'src/utils/logger';
 
 export function createFetch$<T = unknown>(url: URL, options?: RequestInit) {
-  const abortController = new AbortController();
-
   const fetch$ = new Observable<T>((subscriber) => {
+    const abortController = new AbortController();
+
     parserLogger.info(`Start parsing url: ${url}`);
 
     fetch(url, {

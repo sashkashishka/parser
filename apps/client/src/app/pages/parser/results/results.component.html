@@ -7,6 +7,6 @@
 </div>
 
 <div class="list">
-  <app-card *ngFor="let ad of results.slice().reverse()" [ad]="ad" (markViewed)="markViewed($event)"
+  <app-card *ngFor="let ad of results" [ad]="ad" (markViewed)="markViewed($event)"
     [isViewed]="notViewedList.get(ad.id) ?? true"></app-card>
 </div>
