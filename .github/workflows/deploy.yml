@@ -85,6 +85,7 @@ jobs:
         -var jwt_secret=${{ secrets.JWT_SECRET }} \
         -var hash_salt=${{ secrets.HASH_SALT }} \
         -var nomad_token=${{ secrets.NOMAD_TOKEN }} \
+        -var commit_hash=${{ github.sha }} \
         -var nomad_addr=${{ secrets.NOMAD_ADDR }} \
         -var node_env=production
 

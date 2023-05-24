@@ -35,6 +35,7 @@ resource "nomad_job" "nestjs" {
       hash_salt       = var.hash_salt,
       node_env        = var.node_env,
       docker_username = var.docker_username,
+      commit_hash     = var.commit_hash
     }
   )
   depends_on = [
@@ -90,5 +91,10 @@ variable "node_env" {
 
 variable "docker_username" {
   description = "docker registry username"
+  type        = string
+}
+
+variable "commit_hash" {
+  description = "git commit hash"
   type        = string
 }

@@ -63,6 +63,7 @@ job "nestjs" {
         HASH_SALT = "${hash_salt}"
         JWT_SECRET = "${jwt_secret}"
         NODE_ENV = "${node_env}"
+        COMMIT_HASH = "${commit_hash}"
       }
     }
   }
