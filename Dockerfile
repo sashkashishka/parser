@@ -21,4 +21,8 @@ COPY ./apps/server/prisma ./prisma
 COPY ./apps/client/dist/client ./static
 COPY ./apps/server/dist .
 
-CMD ["pnpm", "prisma", "migrate", "deploy", "&&", "pnpm", "prisma", "generate", "&&", "node", "main.js"]
+RUN echo "pnpm prisma migrate deploy && pnpm prisma generate && node main.js" > start.sh
+
+RUN chmod +x ./start.sh
+
+CMD ["./start.sh"]
